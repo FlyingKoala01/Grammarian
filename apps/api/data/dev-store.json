@@ -1,0 +1,508 @@
+{
+  "exerciseAttempts": [
+    {
+      "answer": "to study",
+      "createdAt": "2026-03-21T17:12:47.552Z",
+      "exerciseId": "recognition:bc751edc-68f6-46bd-8b7e-33c729ad06d5",
+      "id": "bf79d0bb-1135-436a-8479-6cac1c016aac",
+      "isCorrect": true,
+      "kind": "recognition",
+      "normalizedAnswer": "to study",
+      "userId": "352a9a24-dc83-46cc-afa7-ce90fa6d053c",
+      "wordId": "bc751edc-68f6-46bd-8b7e-33c729ad06d5"
+    },
+    {
+      "answer": "to study",
+      "createdAt": "2026-03-21T17:13:09.496Z",
+      "exerciseId": "recognition:947d093c-d2a5-48ab-9eb3-dc5a0fc539bd",
+      "id": "09724910-057a-4df4-86f1-4992b8d2dcc7",
+      "isCorrect": true,
+      "kind": "recognition",
+      "normalizedAnswer": "to study",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "947d093c-d2a5-48ab-9eb3-dc5a0fc539bd"
+    },
+    {
+      "answer": "thank you",
+      "createdAt": "2026-03-21T17:13:09.531Z",
+      "exerciseId": "recognition:2e255e77-3282-4795-933e-a629c48560e2",
+      "id": "1e423b3a-bfb0-431b-838a-fc33b53276a5",
+      "isCorrect": true,
+      "kind": "recognition",
+      "normalizedAnswer": "thank you",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "2e255e77-3282-4795-933e-a629c48560e2"
+    },
+    {
+      "answer": "hello",
+      "createdAt": "2026-03-21T17:13:09.559Z",
+      "exerciseId": "recognition:8f980e40-33b1-48fb-bedb-e0d2aab27ca1",
+      "id": "e3b3faf9-513d-49f6-bce5-1c79786dc39d",
+      "isCorrect": true,
+      "kind": "recognition",
+      "normalizedAnswer": "hello",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "8f980e40-33b1-48fb-bedb-e0d2aab27ca1"
+    },
+    {
+      "answer": "学习",
+      "createdAt": "2026-03-21T17:13:09.591Z",
+      "exerciseId": "writing:947d093c-d2a5-48ab-9eb3-dc5a0fc539bd",
+      "id": "96c66903-b228-45be-b3d2-d7f919986103",
+      "isCorrect": true,
+      "kind": "writing",
+      "normalizedAnswer": "学习",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "947d093c-d2a5-48ab-9eb3-dc5a0fc539bd"
+    },
+    {
+      "answer": "Thank you",
+      "createdAt": "2026-03-21T18:23:23.286Z",
+      "exerciseId": "recognition:4d87f914-356d-4128-94a9-28b2435cfa53",
+      "id": "1915e673-da78-4119-9e5f-8a3440974501",
+      "isCorrect": true,
+      "kind": "recognition",
+      "normalizedAnswer": "thank you",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "4d87f914-356d-4128-94a9-28b2435cfa53"
+    },
+    {
+      "answer": "xue2 xi2",
+      "createdAt": "2026-03-21T18:27:22.956Z",
+      "exerciseId": "pinyin:f3566d90-c992-4cba-920f-47fcdc153450",
+      "id": "47304256-d70d-4cef-b26b-0b3756a0671e",
+      "isCorrect": true,
+      "kind": "pinyin",
+      "normalizedAnswer": "xue2xi2",
+      "userId": "84d0e951-91a7-42b3-bf78-a34058320f2d",
+      "wordId": "f3566d90-c992-4cba-920f-47fcdc153450"
+    },
+    {
+      "answer": "谢谢",
+      "createdAt": "2026-03-21T21:16:53.132Z",
+      "exerciseId": "writing:4d87f914-356d-4128-94a9-28b2435cfa53",
+      "id": "2c39297c-2dab-4d73-853f-34511ac320c0",
+      "isCorrect": false,
+      "kind": "writing",
+      "normalizedAnswer": "谢谢",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "4d87f914-356d-4128-94a9-28b2435cfa53"
+    },
+    {
+      "answer": "Hello",
+      "createdAt": "2026-03-21T21:17:43.571Z",
+      "exerciseId": "recognition:1c6e0e27-f329-4b6b-b049-ff748569b94f",
+      "id": "2ad39a19-f999-4a5d-8c33-52c0faea2444",
+      "isCorrect": true,
+      "kind": "recognition",
+      "normalizedAnswer": "hello",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "1c6e0e27-f329-4b6b-b049-ff748569b94f"
+    },
+    {
+      "answer": "xuè xuè",
+      "createdAt": "2026-03-21T22:11:49.459Z",
+      "exerciseId": "pinyin:4d87f914-356d-4128-94a9-28b2435cfa53",
+      "id": "98ced08b-984d-4674-80f0-068c9843a3cb",
+      "isCorrect": false,
+      "kind": "pinyin",
+      "normalizedAnswer": "xue4xue4",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "4d87f914-356d-4128-94a9-28b2435cfa53"
+    },
+    {
+      "answer": "你好",
+      "createdAt": "2026-03-21T22:12:14.645Z",
+      "exerciseId": "writing:1c6e0e27-f329-4b6b-b049-ff748569b94f",
+      "id": "08a9ebf9-0dfe-4e34-a9cf-106c1c58c875",
+      "isCorrect": true,
+      "kind": "writing",
+      "normalizedAnswer": "你好",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "1c6e0e27-f329-4b6b-b049-ff748569b94f"
+    },
+    {
+      "answer": "xiè xiè",
+      "createdAt": "2026-03-21T22:44:28.152Z",
+      "exerciseId": "recognition:4d87f914-356d-4128-94a9-28b2435cfa53",
+      "id": "87f74f61-a865-485b-b4e4-c0ca9a6e341c",
+      "isCorrect": false,
+      "kind": "recognition",
+      "normalizedAnswer": "xiè xiè",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "4d87f914-356d-4128-94a9-28b2435cfa53"
+    }
+  ],
+  "reviewSchedules": [
+    {
+      "createdAt": "2026-03-21T17:12:47.493Z",
+      "failureCount": 0,
+      "id": "de57f49f-5ef2-4bbc-a04f-93509576c782",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T17:12:47.493Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T17:12:47.493Z",
+      "userId": "352a9a24-dc83-46cc-afa7-ce90fa6d053c",
+      "wordId": "bc751edc-68f6-46bd-8b7e-33c729ad06d5"
+    },
+    {
+      "createdAt": "2026-03-21T17:12:47.509Z",
+      "failureCount": 0,
+      "id": "37c46218-3494-468b-8dd9-399175f6a7dd",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T17:12:47.509Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T17:12:47.509Z",
+      "userId": "352a9a24-dc83-46cc-afa7-ce90fa6d053c",
+      "wordId": "002f3346-579f-46f9-b7e0-2b1b555229a1"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.394Z",
+      "failureCount": 0,
+      "id": "0c9a7487-978d-4c34-8d1c-b1f215177f63",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T17:13:09.394Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T17:13:09.394Z",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "947d093c-d2a5-48ab-9eb3-dc5a0fc539bd"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.411Z",
+      "failureCount": 0,
+      "id": "ccce6f21-014d-42cd-b736-3912dd5a5c1c",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T17:13:09.411Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T17:13:09.411Z",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "8f980e40-33b1-48fb-bedb-e0d2aab27ca1"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.430Z",
+      "failureCount": 0,
+      "id": "fa8be25c-f88e-4781-b9f2-81b0b3895723",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T17:13:09.430Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T17:13:09.430Z",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "wordId": "2e255e77-3282-4795-933e-a629c48560e2"
+    },
+    {
+      "createdAt": "2026-03-21T17:39:10.691Z",
+      "failureCount": 0,
+      "id": "2d92ba4f-b8f8-43b5-ab71-4e5e19585983",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T17:39:10.691Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T17:39:10.691Z",
+      "userId": "f51d3c9b-cd82-40b4-af22-de21d2e46091",
+      "wordId": "6d49872e-9ab8-4de8-8625-612068d885ec"
+    },
+    {
+      "createdAt": "2026-03-21T18:14:39.019Z",
+      "failureCount": 3,
+      "id": "ac3cd7f0-7eaa-4ada-99fe-fb6e036adaf6",
+      "lastReviewedAt": "2026-03-21T22:44:28.175Z",
+      "nextReviewAt": "2026-03-21T22:54:28.175Z",
+      "reviewCount": 3,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T22:44:28.175Z",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "4d87f914-356d-4128-94a9-28b2435cfa53"
+    },
+    {
+      "createdAt": "2026-03-21T18:27:22.928Z",
+      "failureCount": 0,
+      "id": "aef32ba5-edfb-4a5b-9415-7a542e74c837",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T18:27:22.928Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T18:27:22.928Z",
+      "userId": "84d0e951-91a7-42b3-bf78-a34058320f2d",
+      "wordId": "f3566d90-c992-4cba-920f-47fcdc153450"
+    },
+    {
+      "createdAt": "2026-03-21T21:16:24.118Z",
+      "failureCount": 0,
+      "id": "4eb8e143-e28a-4489-9f23-3177d59e2961",
+      "lastReviewedAt": "2026-03-21T22:12:14.656Z",
+      "nextReviewAt": "2026-03-22T06:12:14.656Z",
+      "reviewCount": 2,
+      "successCount": 2,
+      "updatedAt": "2026-03-21T22:12:14.656Z",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "wordId": "1c6e0e27-f329-4b6b-b049-ff748569b94f"
+    },
+    {
+      "createdAt": "2026-03-21T21:25:55.657Z",
+      "failureCount": 0,
+      "id": "fd263fe2-cda3-4774-83e8-ca4a6ea038fb",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T21:25:55.657Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T21:25:55.657Z",
+      "userId": "3fae958c-a427-4999-b6d3-933cebdaa1dc",
+      "wordId": "39d7aea0-9ff5-48ea-b9f7-13fd298b0313"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:28.341Z",
+      "failureCount": 0,
+      "id": "75537739-6130-4d60-bf68-72692e645f1b",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T22:08:28.341Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T22:08:28.341Z",
+      "userId": "5e22b2f4-46e8-48ba-abdd-d23003f76244",
+      "wordId": "419ce39d-1fa3-4b88-a8f6-522b4ce16cc4"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:40.844Z",
+      "failureCount": 0,
+      "id": "6dc5443c-3199-49bd-bd8e-6c0a6b9047b3",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T22:08:40.844Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T22:08:40.844Z",
+      "userId": "189d8730-2d4f-4f47-a6d5-a1f463d6e6fd",
+      "wordId": "341f6f0a-b96a-418e-affa-248c13f306ea"
+    },
+    {
+      "createdAt": "2026-03-21T22:18:34.163Z",
+      "failureCount": 0,
+      "id": "8f875fce-efc7-489a-82e5-94e5c3fc583d",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T22:18:34.163Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T22:18:34.163Z",
+      "userId": "768e00a8-44cc-4786-b38b-8fd74f342853",
+      "wordId": "00068c58-6a15-475b-88b2-acd13e0447d7"
+    },
+    {
+      "createdAt": "2026-03-21T22:18:43.478Z",
+      "failureCount": 0,
+      "id": "92a4c4ce-59f1-465f-b521-a65b55addd83",
+      "lastReviewedAt": null,
+      "nextReviewAt": "2026-03-21T22:18:43.478Z",
+      "reviewCount": 0,
+      "successCount": 0,
+      "updatedAt": "2026-03-21T22:18:43.478Z",
+      "userId": "727e69ce-abca-410b-819b-7007a5827dd4",
+      "wordId": "e80813cc-738f-4634-8812-51e52dc11873"
+    }
+  ],
+  "users": [
+    {
+      "createdAt": "2026-03-21T17:12:47.442Z",
+      "displayName": "smoke-1774113167344",
+      "id": "352a9a24-dc83-46cc-afa7-ce90fa6d053c",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.355Z",
+      "displayName": "session-1774113189281",
+      "id": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:21:40.475Z",
+      "displayName": "Isaac",
+      "id": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "preferredLanguage": "it"
+    },
+    {
+      "createdAt": "2026-03-21T17:39:10.649Z",
+      "displayName": "normalize-1774114750594",
+      "id": "f51d3c9b-cd82-40b4-af22-de21d2e46091",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T18:27:22.879Z",
+      "displayName": "pinyin-1774117642738",
+      "id": "84d0e951-91a7-42b3-bf78-a34058320f2d",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T21:25:54.530Z",
+      "displayName": "edit-smoke-1774128354526",
+      "id": "3fae958c-a427-4999-b6d3-933cebdaa1dc",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:26.905Z",
+      "displayName": "i18n-smoke-1774130906899",
+      "id": "5e22b2f4-46e8-48ba-abdd-d23003f76244",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:39.702Z",
+      "displayName": "i18n-switch-1774130919699",
+      "id": "189d8730-2d4f-4f47-a6d5-a1f463d6e6fd",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:53.323Z",
+      "displayName": "i18n-ai-1774130933320",
+      "id": "379ba565-92d8-4b26-93fd-e428f5098b82",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:09:44.068Z",
+      "displayName": "i18n-ai-recheck-1774130984065",
+      "id": "4d94731d-8f40-4006-b812-f09216bf9287",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:18:32.999Z",
+      "displayName": "exercise-menu-1774131512995",
+      "id": "768e00a8-44cc-4786-b38b-8fd74f342853",
+      "preferredLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:18:41.964Z",
+      "displayName": "exercise-menu-gap-1774131521961",
+      "id": "727e69ce-abca-410b-819b-7007a5827dd4",
+      "preferredLanguage": "en"
+    }
+  ],
+  "words": [
+    {
+      "createdAt": "2026-03-21T17:12:47.493Z",
+      "id": "bc751edc-68f6-46bd-8b7e-33c729ad06d5",
+      "pinyinCanonical": "xué xí",
+      "simplified": "学习",
+      "translation": "to study",
+      "userId": "352a9a24-dc83-46cc-afa7-ce90fa6d053c",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:12:47.509Z",
+      "id": "002f3346-579f-46f9-b7e0-2b1b555229a1",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "hello",
+      "userId": "352a9a24-dc83-46cc-afa7-ce90fa6d053c",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.394Z",
+      "id": "947d093c-d2a5-48ab-9eb3-dc5a0fc539bd",
+      "pinyinCanonical": "xué xí",
+      "simplified": "学习",
+      "translation": "to study",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.411Z",
+      "id": "8f980e40-33b1-48fb-bedb-e0d2aab27ca1",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "hello",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:13:09.430Z",
+      "id": "2e255e77-3282-4795-933e-a629c48560e2",
+      "pinyinCanonical": "xiè xie",
+      "simplified": "谢谢",
+      "translation": "thank you",
+      "userId": "c16fbbb9-8f2e-4b71-96bd-a52e9242fb55",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T17:39:10.691Z",
+      "id": "6d49872e-9ab8-4de8-8625-612068d885ec",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "hello",
+      "userId": "f51d3c9b-cd82-40b4-af22-de21d2e46091",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T18:14:39.019Z",
+      "id": "4d87f914-356d-4128-94a9-28b2435cfa53",
+      "pinyinCanonical": "xiè xiè",
+      "simplified": "谢谢",
+      "translation": "grazie",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "translationLanguage": "it"
+    },
+    {
+      "createdAt": "2026-03-21T18:27:22.928Z",
+      "id": "f3566d90-c992-4cba-920f-47fcdc153450",
+      "pinyinCanonical": "xué xí",
+      "simplified": "学习",
+      "translation": "to study",
+      "userId": "84d0e951-91a7-42b3-bf78-a34058320f2d",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T21:16:24.118Z",
+      "id": "1c6e0e27-f329-4b6b-b049-ff748569b94f",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "ciao",
+      "userId": "a2846b4b-04c6-459c-b818-47f8d35ccb7a",
+      "translationLanguage": "it"
+    },
+    {
+      "createdAt": "2026-03-21T21:25:55.657Z",
+      "id": "39d7aea0-9ff5-48ea-b9f7-13fd298b0313",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "hi",
+      "userId": "3fae958c-a427-4999-b6d3-933cebdaa1dc",
+      "translationLanguage": "en"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:28.341Z",
+      "id": "419ce39d-1fa3-4b88-a8f6-522b4ce16cc4",
+      "pinyinCanonical": "xué xí",
+      "simplified": "学习",
+      "translation": "estudiar",
+      "translationLanguage": "en",
+      "userId": "5e22b2f4-46e8-48ba-abdd-d23003f76244"
+    },
+    {
+      "createdAt": "2026-03-21T22:08:40.844Z",
+      "id": "341f6f0a-b96a-418e-affa-248c13f306ea",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "hello",
+      "translationLanguage": "en",
+      "userId": "189d8730-2d4f-4f47-a6d5-a1f463d6e6fd"
+    },
+    {
+      "createdAt": "2026-03-21T22:18:34.163Z",
+      "id": "00068c58-6a15-475b-88b2-acd13e0447d7",
+      "pinyinCanonical": "xué xí",
+      "simplified": "学习",
+      "translation": "to study",
+      "translationLanguage": "en",
+      "userId": "768e00a8-44cc-4786-b38b-8fd74f342853"
+    },
+    {
+      "createdAt": "2026-03-21T22:18:43.478Z",
+      "id": "e80813cc-738f-4634-8812-51e52dc11873",
+      "pinyinCanonical": "nǐ hǎo",
+      "simplified": "你好",
+      "translation": "hello",
+      "translationLanguage": "en",
+      "userId": "727e69ce-abca-410b-819b-7007a5827dd4"
+    }
+  ]
+}
