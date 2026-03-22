@@ -83,6 +83,14 @@ A practical starting setup can include:
 
 Do not pack everything into one container. Keep boundaries clear.
 
+## Development Compose
+For local development, it is reasonable to start with a smaller Compose setup that runs only PostgreSQL while the web app and API continue to run from local source with `pnpm dev`.
+
+That keeps:
+- database state reproducible
+- the frontend/backend edit loop fast
+- migrations easy to test before production container work starts
+
 ## Reverse Proxy and TLS
 For public deployment:
 - terminate TLS at a reverse proxy or load balancer

@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: grammarian-dev-db
+    environment:
+      POSTGRES_DB: ${DEV_DB_NAME:-grammarian}
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD:-grammarian}
+      POSTGRES_USER: ${DEV_DB_USER:-grammarian}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    ports:
+      - "${DEV_DB_PORT:-5433}:5432"
+    restart: unless-stopped
+    volumes:
+      - grammarian-dev-postgres:/var/lib/postgresql/data
+
+volumes:
+  grammarian-dev-postgres:

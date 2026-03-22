@@ -16,7 +16,7 @@ import {
 } from "../domain/word-intake.js";
 import { buildListedStudyWords } from "../domain/word-review.js";
 import { AppError } from "../errors/app-error.js";
-import { devStoreRepository } from "../repositories/dev-store-repository.js";
+import { studyRepository } from "../repositories/index.js";
 import { wordIntakeService } from "./word-intake-service.js";
 
 class WordService {
@@ -28,7 +28,7 @@ class WordService {
     const { draft: validatedWord, validation } =
       await this.validateWordForSave(input, user.preferredLanguage);
 
-    const existingWord = await devStoreRepository.findWordByUserAndSimplified(
+    const existingWord = await studyRepository.findWordByUserAndSimplified(
       userId,
       validatedWord.simplified,
     );
@@ -37,7 +37,7 @@ class WordService {
       throw new AppError(409, "That word already exists for this user.");
     }
 
-    const word = await devStoreRepository.createWord({
+    const word = await studyRepository.createWord({
       ...validatedWord,
       translationLanguage: user.preferredLanguage,
       userId,
@@ -58,7 +58,7 @@ class WordService {
   ): Promise<UpdateWordResponse> {
     const user = await this.requireUser(userId);
 
-    const existingWord = await devStoreRepository.findWordById(wordId);
+    const existingWord = await studyRepository.findWordById(wordId);
 
     if (!existingWord || existingWord.userId !== userId) {
       throw new AppError(404, "Word not found.");
@@ -66,7 +66,7 @@ class WordService {
 
     const { draft: validatedWord, validation } =
       await this.validateWordForSave(input, user.preferredLanguage);
-    const conflictingWord = await devStoreRepository.findWordByUserAndSimplified(
+    const conflictingWord = await studyRepository.findWordByUserAndSimplified(
       userId,
       validatedWord.simplified,
     );
@@ -75,7 +75,7 @@ class WordService {
       throw new AppError(409, "That word already exists for this user.");
     }
 
-    const word = await devStoreRepository.updateWord(userId, wordId, {
+    const word = await studyRepository.updateWord(userId, wordId, {
       ...validatedWord,
       translationLanguage: user.preferredLanguage,
     });
@@ -97,8 +97,8 @@ class WordService {
     await this.requireUser(userId);
 
     const [reviewSchedules, words] = await Promise.all([
-      devStoreRepository.listReviewSchedulesByUserId(userId),
-      devStoreRepository.listWordsByUserId(userId),
+      studyRepository.listReviewSchedulesByUserId(userId),
+      studyRepository.listWordsByUserId(userId),
     ]);
 
     return {
@@ -107,7 +107,7 @@ class WordService {
   }
 
   private async requireUser(userId: string) {
-    const user = await devStoreRepository.findUserById(userId);
+    const user = await studyRepository.findUserById(userId);
 
     if (!user) {
       throw new AppError(404, "User not found.");
@@ -136,7 +136,7 @@ class WordService {
   }
 
   private async buildListedWord(userId: string, word: StudyWord) {
-    const reviewSchedules = await devStoreRepository.listReviewSchedulesByUserId(userId);
+    const reviewSchedules = await studyRepository.listReviewSchedulesByUserId(userId);
     return buildListedStudyWords([word], reviewSchedules)[0];
   }
 }

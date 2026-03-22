@@ -19,14 +19,14 @@ import {
 } from "../domain/word-intake.js";
 import { AppError } from "../errors/app-error.js";
 import { openAIWordIntakeNormalizer } from "../llm/openai-word-intake-normalizer.js";
-import { devStoreRepository } from "../repositories/dev-store-repository.js";
+import { studyRepository } from "../repositories/index.js";
 
 class WordIntakeService {
   async normalizeWord(
     userId: string,
     sourceText: string,
   ): Promise<NormalizeWordResponse> {
-    const user = await devStoreRepository.findUserById(userId);
+    const user = await studyRepository.findUserById(userId);
 
     if (!user) {
       throw new AppError(404, "User not found.");
@@ -86,7 +86,7 @@ class WordIntakeService {
     draftInput: Partial<WordDraft>,
     requestMode: SuggestWordDraftRequest["mode"] = "hybrid",
   ): Promise<SuggestWordDraftResponse> {
-    const user = await devStoreRepository.findUserById(userId);
+    const user = await studyRepository.findUserById(userId);
 
     if (!user) {
       throw new AppError(404, "User not found.");

@@ -14,23 +14,23 @@ import {
 } from "../domain/word-exercise.js";
 import { updateWordReviewSchedule } from "../domain/word-review.js";
 import { AppError } from "../errors/app-error.js";
-import { devStoreRepository } from "../repositories/dev-store-repository.js";
+import { studyRepository } from "../repositories/index.js";
 
 class ExerciseService {
   async getNextWordExercise(
     userId: string,
     exerciseType?: DocumentedExerciseType,
   ): Promise<GetNextWordExerciseResponse> {
-    const user = await devStoreRepository.findUserById(userId);
+    const user = await studyRepository.findUserById(userId);
 
     if (!user) {
       throw new AppError(404, "User not found.");
     }
 
     const [attempts, reviewSchedules, words] = await Promise.all([
-      devStoreRepository.listExerciseAttemptsByUserId(userId),
-      devStoreRepository.listReviewSchedulesByUserId(userId),
-      devStoreRepository.listWordsByUserId(userId),
+      studyRepository.listExerciseAttemptsByUserId(userId),
+      studyRepository.listReviewSchedulesByUserId(userId),
+      studyRepository.listWordsByUserId(userId),
     ]);
 
     return {
@@ -50,14 +50,14 @@ class ExerciseService {
     userId: string,
     input: SubmitWordExerciseRequest,
   ): Promise<SubmitWordExerciseResponse> {
-    const user = await devStoreRepository.findUserById(userId);
+    const user = await studyRepository.findUserById(userId);
 
     if (!user) {
       throw new AppError(404, "User not found.");
     }
 
     const { wordId } = parseExerciseId(input.exerciseId);
-    const word = await devStoreRepository.findWordById(wordId);
+    const word = await studyRepository.findWordById(wordId);
 
     if (!word || word.userId !== userId) {
       throw new AppError(404, "Word not found for this user.");
@@ -65,7 +65,7 @@ class ExerciseService {
 
     const evaluation = evaluateWordExercise(input.exerciseId, input.answer, word);
 
-    await devStoreRepository.recordExerciseAttempt({
+    await studyRepository.recordExerciseAttempt({
       answer: input.answer.trim(),
       exerciseId: input.exerciseId,
       isCorrect: evaluation.isCorrect,
@@ -74,14 +74,14 @@ class ExerciseService {
       userId,
       wordId,
     });
-    await devStoreRepository.updateReviewScheduleForWord(userId, wordId, (schedule) =>
+    await studyRepository.updateReviewScheduleForWord(userId, wordId, (schedule) =>
       updateWordReviewSchedule(schedule, evaluation.isCorrect),
     );
 
     const [attempts, reviewSchedules, words] = await Promise.all([
-      devStoreRepository.listExerciseAttemptsByUserId(userId),
-      devStoreRepository.listReviewSchedulesByUserId(userId),
-      devStoreRepository.listWordsByUserId(userId),
+      studyRepository.listExerciseAttemptsByUserId(userId),
+      studyRepository.listReviewSchedulesByUserId(userId),
+      studyRepository.listWordsByUserId(userId),
     ]);
 
     return {

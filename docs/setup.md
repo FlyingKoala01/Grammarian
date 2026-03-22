@@ -22,6 +22,10 @@ pnpm init
 pnpm install
 ```
 
+Create a root `.env` file from `.env.example` and make sure `DATABASE_URL` matches a real local PostgreSQL user, password, host, port, and database before starting the API.
+
+If you want the database to run in Docker for development, use the repo's Compose file and keep `DATABASE_URL` aligned with the container defaults from `.env.example`.
+
 For a monorepo setup, one practical starting point is:
 ```text
 apps/web
@@ -68,6 +72,53 @@ Early database goals:
 - session history
 - review scheduling
 - tutor interactions if retained
+
+### Development Database with Docker Compose
+Start PostgreSQL in Docker:
+```bash
+pnpm dev:db:up
+```
+
+The development Compose file exposes PostgreSQL on `localhost:${DEV_DB_PORT}` and defaults to:
+- database: `${DEV_DB_NAME}`
+- user: `${DEV_DB_USER}`
+- password: `${DEV_DB_PASSWORD}`
+
+With the default example values, `DATABASE_URL` should be:
+```env
+DATABASE_URL=postgresql://grammarian:grammarian@localhost:5433/grammarian
+```
+
+Then apply the schema:
+```bash
+pnpm --filter @grammarian/api db:migrate
+```
+
+If you want to carry over the old JSON-backed development data once:
+```bash
+pnpm --filter @grammarian/api db:import-dev-store
+```
+
+When you're done:
+```bash
+pnpm dev:db:down
+```
+
+If you need a clean database volume:
+```bash
+pnpm dev:db:reset
+```
+
+Current repository scripts for the API:
+```bash
+pnpm --filter @grammarian/api db:generate
+pnpm --filter @grammarian/api db:migrate
+pnpm --filter @grammarian/api db:import-dev-store
+```
+
+Use `db:migrate` to apply committed SQL migrations to PostgreSQL.
+
+Use `db:import-dev-store` once if you want to copy the old JSON development data into the database after migrating.
 
 ## LLM Module Setup
 Keep LLM setup isolated in one backend area. That module should expose application-friendly interfaces instead of raw provider calls.

@@ -4,24 +4,32 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:import-dev-store": "tsx src/scripts/import-dev-store.ts",
+    "db:migrate": "tsx src/scripts/migrate.ts",
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
+    "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@grammarian/shared": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
     "openai": "^6.32.0",
+    "postgres": "^3.4.8",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
+    "drizzle-kit": "^0.31.10",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   }
 }
