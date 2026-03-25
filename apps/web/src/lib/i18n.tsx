@@ -15,12 +15,11 @@ export interface AppMessages {
   demoLoginFootnote: string;
   demoLoginHelp: string;
   dictionary: string;
-  dueNow: string;
-  dueNowCount: (count: number) => string;
   edit: string;
   editingWord: (word: string) => string;
   editWordHelp: string;
   emptyDictionary: string;
+  exerciseChooseMode: string;
   exerciseEmpty: string;
   exerciseHint: string;
   exerciseImplementationStatus: string;
@@ -36,6 +35,8 @@ export interface AppMessages {
   exerciseOptionGapFillUnavailableMessage: string;
   exerciseOptionPinyinRecognitionDescription: string;
   exerciseOptionPinyinRecognitionLabel: string;
+  exerciseOptionRandomDescription: string;
+  exerciseOptionRandomLabel: string;
   exerciseOptionSentenceUnderstandingDescription: string;
   exerciseOptionSentenceUnderstandingLabel: string;
   exerciseOptionSentenceUnderstandingUnavailableMessage: string;
@@ -60,24 +61,14 @@ export interface AppMessages {
   meaning: string;
   next: string;
   nextExercise: string;
-  nextReview: (date: string) => string;
-  nextReviewShort: (date: string) => string;
   noAnswerRecorded: string;
-  noReviewsScheduled: string;
-  nothingDue: string;
   pinyinAnswerHint: string;
   pinyinExerciseHint: (initials: string, syllableCount: number) => string;
   pinyinPlaceholder: string;
   placeholder: string;
   preparingAiDraft: string;
   preparingAiDraftMessage: (fields: string) => string;
-  queueClear: string;
-  readyForReview: string;
   restoringSession: string;
-  reviewDueDetail: (count: number) => string;
-  reviewNothingDue: string;
-  reviewQueue: string;
-  reviewScheduled: string;
   retryExercise: string;
   recognitionExerciseHint: (initials: string, wordCount: number) => string;
   saveChanges: string;
@@ -134,14 +125,14 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     demoLoginFootnote: "One learner name maps to one personal study set.",
     demoLoginHelp: "Use the same name later to return to the same study set.",
     dictionary: "Dictionary",
-    dueNow: "Due now",
-    dueNowCount: (count) => `${count} due now`,
     edit: "Edit",
     editingWord: (word) => `Editing ${word}`,
     editWordHelp:
       "Edit the saved word. AI will verify the hanzi, pinyin, and meaning again when you save.",
     emptyDictionary:
       "Start typing a word entry and save it when the fields look right.",
+    exerciseChooseMode:
+      "Choose a practice mode first. Once you pick one, the full exercise view takes over.",
     exerciseEmpty:
       "Add words in the dictionary first, then come back here to practice.",
     exerciseHint: "Hint",
@@ -164,6 +155,9 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     exerciseOptionPinyinRecognitionDescription:
       "Connect hanzi to pronunciation by writing the correct pinyin.",
     exerciseOptionPinyinRecognitionLabel: "Pinyin Recognition",
+    exerciseOptionRandomDescription:
+      "Mix recognition, pinyin, and writing prompts in one study flow.",
+    exerciseOptionRandomLabel: "Random Mix",
     exerciseOptionSentenceUnderstandingDescription:
       "Work on sentence meaning, grammar, and interpretation in context.",
     exerciseOptionSentenceUnderstandingLabel: "Sentence Understanding",
@@ -191,11 +185,7 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     meaning: "Meaning",
     next: "Next",
     nextExercise: "Next exercise",
-    nextReview: (date) => `Next review ${date}`,
-    nextReviewShort: (date) => `Next ${date}`,
     noAnswerRecorded: "No answer recorded",
-    noReviewsScheduled: "No reviews scheduled yet",
-    nothingDue: "Nothing due",
     pinyinAnswerHint: "Tone marks and tone numbers are both accepted.",
     pinyinExerciseHint: (initials, syllableCount) =>
       `Hint: ${syllableCount} syllable${syllableCount === 1 ? "" : "s"}. It starts like ${initials}.`,
@@ -204,14 +194,7 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     preparingAiDraft: "AI is refining the word draft.",
     preparingAiDraftMessage: (fields) =>
       `Trying to suggest ${fields || "the missing fields"}.`,
-    queueClear: "Queue clear",
-    readyForReview: "Ready for review",
     restoringSession: "Restoring your study session...",
-    reviewDueDetail: (count) =>
-      `${count} word${count === 1 ? "" : "s"} due for review now.`,
-    reviewNothingDue: "No review items are due yet.",
-    reviewQueue: "Review queue",
-    reviewScheduled: "Scheduled",
     recognitionExerciseHint: (initials, wordCount) =>
       `Hint: ${wordCount} word${wordCount === 1 ? "" : "s"}. It starts like ${initials}.`,
     retryExercise: "Try again",
@@ -274,14 +257,14 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     demoLoginHelp:
       "Usa lo stesso nome piu tardi per tornare allo stesso set di studio.",
     dictionary: "Dizionario",
-    dueNow: "Da ripassare",
-    dueNowCount: (count) => `${count} da ripassare`,
     edit: "Modifica",
     editingWord: (word) => `Modifica di ${word}`,
     editWordHelp:
       "Modifica la parola salvata. Quando salvi, l'IA ricontrollera hanzi, pinyin e significato.",
     emptyDictionary:
       "Inizia a digitare una parola e salvala quando i campi ti sembrano corretti.",
+    exerciseChooseMode:
+      "Scegli prima una modalita di pratica. Dopo la scelta, la vista dell'esercizio prende il posto del menu.",
     exerciseEmpty:
       "Aggiungi prima parole nel dizionario, poi torna qui per esercitarti.",
     exerciseHint: "Suggerimento",
@@ -304,6 +287,9 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     exerciseOptionPinyinRecognitionDescription:
       "Collega gli hanzi alla pronuncia scrivendo il pinyin corretto.",
     exerciseOptionPinyinRecognitionLabel: "Riconoscimento del pinyin",
+    exerciseOptionRandomDescription:
+      "Mescola riconoscimento, pinyin e scrittura nella stessa sessione di studio.",
+    exerciseOptionRandomLabel: "Mix casuale",
     exerciseOptionSentenceUnderstandingDescription:
       "Lavora su significato, grammatica e interpretazione della frase nel contesto.",
     exerciseOptionSentenceUnderstandingLabel: "Comprensione della frase",
@@ -331,11 +317,7 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     meaning: "Significato",
     next: "Avanti",
     nextExercise: "Prossimo esercizio",
-    nextReview: (date) => `Prossimo ripasso ${date}`,
-    nextReviewShort: (date) => `Prossimo ${date}`,
     noAnswerRecorded: "Nessuna risposta registrata",
-    noReviewsScheduled: "Nessun ripasso programmato per ora",
-    nothingDue: "Nulla in scadenza",
     pinyinAnswerHint: "Sono accettati sia i toni numerici sia gli accenti.",
     pinyinExerciseHint: (initials, syllableCount) =>
       `Suggerimento: ${syllableCount} sillab${syllableCount === 1 ? "a" : "e"}. Inizia come ${initials}.`,
@@ -344,14 +326,7 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     preparingAiDraft: "L'IA sta rifinendo la scheda della parola.",
     preparingAiDraftMessage: (fields) =>
       `Sto cercando di suggerire ${fields || "i campi mancanti"}.`,
-    queueClear: "Coda vuota",
-    readyForReview: "Pronto per il ripasso",
     restoringSession: "Ripristino della tua sessione di studio...",
-    reviewDueDetail: (count) =>
-      `${count} parola${count === 1 ? "" : "e"} da ripassare adesso.`,
-    reviewNothingDue: "Nessun elemento e ancora da ripassare.",
-    reviewQueue: "Coda di ripasso",
-    reviewScheduled: "Programmato",
     recognitionExerciseHint: (initials, wordCount) =>
       `Suggerimento: ${wordCount} parol${wordCount === 1 ? "a" : "e"}. Inizia come ${initials}.`,
     retryExercise: "Riprova",
@@ -403,7 +378,6 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
 };
 
 interface I18nContextValue {
-  formatDateTime: (value: string) => string;
   locale: AppLocale;
   messages: AppMessages;
 }
@@ -427,13 +401,6 @@ export function I18nProvider({
   return (
     <I18nContext.Provider
       value={{
-        formatDateTime: (value: string) =>
-          new Intl.DateTimeFormat(locale, {
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit",
-            month: "short",
-          }).format(new Date(value)),
         locale,
         messages,
       }}

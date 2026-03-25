@@ -16,14 +16,13 @@ class UserService {
       throw new AppError(404, "User not found.");
     }
 
-    const [attempts, reviewSchedules, words] = await Promise.all([
+    const [attempts, words] = await Promise.all([
       studyRepository.listExerciseAttemptsByUserId(userId),
-      studyRepository.listReviewSchedulesByUserId(userId),
       studyRepository.listWordsByUserId(userId),
     ]);
 
     return {
-      progress: buildStudyProgressSummary(words, attempts, reviewSchedules),
+      progress: buildStudyProgressSummary(words, attempts),
       user,
     };
   }
@@ -41,14 +40,13 @@ class UserService {
       throw new AppError(404, "User not found.");
     }
 
-    const [attempts, reviewSchedules, words] = await Promise.all([
+    const [attempts, words] = await Promise.all([
       studyRepository.listExerciseAttemptsByUserId(userId),
-      studyRepository.listReviewSchedulesByUserId(userId),
       studyRepository.listWordsByUserId(userId),
     ]);
 
     return {
-      progress: buildStudyProgressSummary(words, attempts, reviewSchedules),
+      progress: buildStudyProgressSummary(words, attempts),
       user,
     };
   }

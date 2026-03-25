@@ -1,7 +1,5 @@
 import { randomUUID } from "node:crypto";
 
-import type { ListedStudyWord, StudyWord } from "@grammarian/shared";
-
 export interface StoredWordReviewSchedule {
   createdAt: string;
   failureCount: number;
@@ -77,28 +75,6 @@ export function updateWordReviewSchedule(
     successCount: schedule.successCount + (isCorrect ? 1 : 0),
     updatedAt: reviewedAtIso,
   };
-}
-
-export function buildListedStudyWords(
-  words: StudyWord[],
-  schedules: StoredWordReviewSchedule[],
-  referenceTime = new Date(),
-): ListedStudyWord[] {
-  const scheduleByWordId = new Map(
-    schedules.map((schedule) => [schedule.wordId, schedule]),
-  );
-
-  return words.map((word) => {
-    const schedule = scheduleByWordId.get(word.id);
-
-    return {
-      ...word,
-      review: {
-        isDue: schedule ? isWordReviewDue(schedule, referenceTime) : true,
-        nextReviewAt: schedule?.nextReviewAt ?? word.createdAt,
-      },
-    };
-  });
 }
 
 function pickSuccessInterval(successCount: number) {

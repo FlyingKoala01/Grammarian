@@ -6,14 +6,13 @@ import {
   buildNextWordExercise,
   evaluateWordExercise,
 } from "../src/domain/word-exercise.js";
-import { createInitialWordReviewSchedule } from "../src/domain/word-review.js";
 
 function buildWord(overrides: Partial<StudyWord> = {}): StudyWord {
   return {
     createdAt: "2026-03-22T10:00:00.000Z",
     id: "word-1",
     pinyinCanonical: "xue2 xi2",
-    simplified: "学习",
+    simplified: "\u5b66\u4e60",
     translation: "to study",
     translationLanguage: "en",
     userId: "user-1",
@@ -22,50 +21,35 @@ function buildWord(overrides: Partial<StudyWord> = {}): StudyWord {
 }
 
 describe("word exercise flow", () => {
-  it("prefers due words when choosing the next exercise", () => {
-    const dueWord = buildWord({
+  it("prefers the oldest least-practiced word when choosing the next exercise", () => {
+    const olderWord = buildWord({
       createdAt: "2026-03-22T09:00:00.000Z",
-      id: "word-due",
-      simplified: "你好",
+      id: "word-older",
+      simplified: "\u4f60\u597d",
       pinyinCanonical: "ni3 hao3",
       translation: "hello",
     });
-    const scheduledWord = buildWord({
+    const newerWord = buildWord({
       createdAt: "2026-03-22T10:00:00.000Z",
-      id: "word-later",
-      simplified: "谢谢",
+      id: "word-newer",
+      simplified: "\u8c22\u8c22",
       pinyinCanonical: "xie4 xie",
       translation: "thanks",
     });
 
-    const dueSchedule = createInitialWordReviewSchedule(
-      "user-1",
-      dueWord.id,
-      "2026-03-22T09:00:00.000Z",
-    );
-    const scheduledSchedule = {
-      ...createInitialWordReviewSchedule(
-        "user-1",
-        scheduledWord.id,
-        "2026-03-22T10:00:00.000Z",
-      ),
-      nextReviewAt: "2099-03-22T10:00:00.000Z",
-    };
-
     const exercise = buildNextWordExercise(
-      [dueWord, scheduledWord],
+      [newerWord, olderWord],
       [],
-      [scheduledSchedule, dueSchedule],
       "en",
     );
 
-    expect(exercise.wordId).toBe(dueWord.id);
+    expect(exercise.wordId).toBe(olderWord.id);
   });
 
   it("accepts pinyin answers written with tone marks", () => {
     const word = buildWord();
 
-    const result = evaluateWordExercise("pinyin:word-1", "xué xí", word);
+    const result = evaluateWordExercise("pinyin:word-1", "xu\u00e9 x\u00ed", word);
 
     expect(result.isCorrect).toBe(true);
     expect(result.normalizedAnswer).toBe("xue2xi2");

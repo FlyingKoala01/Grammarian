@@ -8,8 +8,6 @@ export interface LearnerProfile {
 }
 
 export interface StudyProgressSummary {
-  dueReviewCount: number;
-  nextReviewAt: string | null;
   totalWords: number;
   totalAttempts: number;
   correctAttempts: number;

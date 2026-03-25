@@ -4,9 +4,9 @@ import { LoaderCircle, PencilLine } from "lucide-react";
 import type {
   AppLocale,
   CreateWordResponse,
-  ListedStudyWord,
   SuggestWordDraftRequest,
   SuggestWordDraftResponse,
+  StudyWord,
   UpdateWordResponse,
   WordDraft,
   WordValidationResult,
@@ -31,7 +31,7 @@ interface WordManagerProps {
     input: WordDraft,
   ) => Promise<UpdateWordResponse | null>;
   preferredLanguage: AppLocale;
-  words: ListedStudyWord[];
+  words: StudyWord[];
 }
 
 function createEmptyDraft(): WordDraft {
@@ -51,7 +51,7 @@ export function WordManager({
   preferredLanguage,
   words,
 }: WordManagerProps) {
-  const { formatDateTime, messages } = useI18n();
+  const { messages } = useI18n();
   const [draft, setDraft] = useState<WordDraft>(createEmptyDraft);
   const [editingWordId, setEditingWordId] = useState<string | null>(null);
   const [isEnrichingSuggestions, setIsEnrichingSuggestions] = useState(false);
@@ -217,10 +217,6 @@ export function WordManager({
       (!draft.translation.trim() && Boolean(suggestionState.draft.translation))
     );
   }, [draft, suggestionState]);
-  const dueWordCount = useMemo(
-    () => words.filter((word) => word.review.isDue).length,
-    [words],
-  );
   const pendingSuggestionFields = useMemo(
     () => getPendingSuggestionFields(draft, messages),
     [draft, messages],
@@ -286,7 +282,7 @@ export function WordManager({
     }));
   }
 
-  function startEditingWord(word: ListedStudyWord) {
+  function startEditingWord(word: StudyWord) {
     skipNextSuggestionRequestRef.current = true;
     setEditingWordId(word.id);
     setIsEnrichingSuggestions(false);
@@ -498,11 +494,6 @@ export function WordManager({
             <p className="text-sm font-medium text-slate-600 dark:text-stone-300">{messages.savedWords}</p>
             <p className="mt-1 text-3xl font-semibold text-slate-950 dark:text-stone-50">{words.length}</p>
           </div>
-          <StatusBadge>
-            {dueWordCount > 0
-              ? messages.dueNowCount(dueWordCount)
-              : messages.queueClear}
-          </StatusBadge>
         </div>
 
         <div className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1">
@@ -522,32 +513,16 @@ export function WordManager({
                     className="rounded-[1.25rem] border border-slate-200 bg-slate-50/85 px-4 py-4 dark:border-white/10 dark:bg-white/5"
                     key={word.id}
                   >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex flex-wrap items-start gap-3">
                       <p className="text-3xl font-semibold text-slate-950 dark:text-stone-50">
                         {word.simplified}
                       </p>
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${
-                          word.review.isDue
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-stone-300"
-                        }`}
-                      >
-                        {word.review.isDue
-                          ? messages.dueNow
-                          : messages.reviewScheduled}
-                      </span>
                     </div>
                     <p className="mt-2 text-sm font-medium text-slate-700 dark:text-stone-200">
                       {toneMarkedPinyin || word.pinyinCanonical}
                     </p>
                     <p className="mt-3 text-sm leading-6 text-amber-800">
                       {word.translation}
-                    </p>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-stone-400">
-                      {word.review.isDue
-                        ? messages.readyForReview
-                        : messages.nextReview(formatDateTime(word.review.nextReviewAt))}
                     </p>
                     <div className="mt-4 flex justify-end">
                       <Button

@@ -27,7 +27,6 @@ export interface WordExercise {
   exerciseType: DocumentedExerciseType;
   exerciseId: string;
   kind: WordExerciseKind;
-  queueMode: "due" | "scheduled";
   wordId: string;
   promptText: string;
   promptSecondaryText?: string;

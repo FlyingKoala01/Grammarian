@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import logoNoBackground from "../assets/logo_no_background.png";
+import { BookMarked, BrainCircuit, Sparkles, type LucideIcon } from "lucide-react";
 
 import type {
   AppLocale,
@@ -7,9 +8,9 @@ import type {
   DocumentedExerciseType,
   GetNextWordExerciseRequest,
   LearnerProfile,
-  ListedStudyWord,
   SuggestWordDraftRequest,
   StudyProgressSummary,
+  StudyWord,
   UpdateWordResponse,
   WordExercise,
   WordExerciseResult,
@@ -20,7 +21,6 @@ import {
   isSupportedWordExerciseType,
 } from "@grammarian/shared";
 
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   SidebarInset,
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 import { DemoLoginCard } from "@/features/auth/DemoLoginCard";
 import { ExerciseRunner } from "@/features/exercises/ExerciseRunner";
+import type { ExerciseMode } from "@/features/exercises/exercise-mode";
 import { AppSidebar } from "@/features/shell/AppSidebar";
 import { WordManager } from "@/features/words/WordManager";
 import {
@@ -70,14 +71,13 @@ export function App() {
   );
   const [themeMode, setThemeMode] = useState<AppThemeMode>(getInitialThemeMode);
   const [activeView, setActiveView] = useState<ActiveView>("dictionary");
-  const [exerciseErrorMessage, setExerciseErrorMessage] = useState<string | null>(
-    null,
-  );
-  const [exerciseResult, setExerciseResult] = useState<WordExerciseResult | null>(
-    null,
-  );
-  const [selectedExerciseType, setSelectedExerciseType] =
-    useState<DocumentedExerciseType>("character_recognition");
+  const [exerciseErrorMessage, setExerciseErrorMessage] = useState<
+    string | null
+  >(null);
+  const [exerciseResult, setExerciseResult] =
+    useState<WordExerciseResult | null>(null);
+  const [selectedExerciseMode, setSelectedExerciseMode] =
+    useState<ExerciseMode | null>(null);
   const [isExerciseLoading, setIsExerciseLoading] = useState(false);
   const [isExerciseSubmitting, setIsExerciseSubmitting] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -88,8 +88,10 @@ export function App() {
     status: "loading",
   });
   const [wordErrorMessage, setWordErrorMessage] = useState<string | null>(null);
-  const [words, setWords] = useState<ListedStudyWord[]>([]);
-  const [currentExercise, setCurrentExercise] = useState<WordExercise | null>(null);
+  const [words, setWords] = useState<StudyWord[]>([]);
+  const [currentExercise, setCurrentExercise] = useState<WordExercise | null>(
+    null,
+  );
   const appLocale =
     sessionState.status === "ready"
       ? sessionState.user.preferredLanguage
@@ -122,22 +124,24 @@ export function App() {
     }
 
     if (
+      !selectedExerciseMode ||
       words.length === 0 ||
       currentExercise ||
       isExerciseLoading ||
       exerciseResult ||
-      !isSupportedWordExerciseType(selectedExerciseType)
+      (selectedExerciseMode !== "random" &&
+        !isSupportedWordExerciseType(selectedExerciseMode))
     ) {
       return;
     }
 
-    void loadNextExercise({ exerciseType: selectedExerciseType });
+    void loadNextExercise(buildExerciseRequest(selectedExerciseMode));
   }, [
     activeView,
     currentExercise,
     exerciseResult,
     isExerciseLoading,
-    selectedExerciseType,
+    selectedExerciseMode,
     sessionState,
     words.length,
   ]);
@@ -245,17 +249,6 @@ export function App() {
       const createWordResponse = await createWord(sessionState.user.id, input);
 
       setWords((currentWords) => [createWordResponse.word, ...currentWords]);
-      setSessionState((currentState) =>
-        currentState.status === "ready"
-          ? {
-              ...currentState,
-              progress: {
-                ...currentState.progress,
-                dueReviewCount: currentState.progress.dueReviewCount + 1,
-              },
-            }
-          : currentState,
-      );
       return createWordResponse;
     } catch (error) {
       setWordErrorMessage(
@@ -283,7 +276,11 @@ export function App() {
     setWordErrorMessage(null);
 
     try {
-      const updateWordResponse = await updateWord(sessionState.user.id, wordId, input);
+      const updateWordResponse = await updateWord(
+        sessionState.user.id,
+        wordId,
+        input,
+      );
 
       setWords((currentWords) =>
         currentWords.map((word) =>
@@ -294,7 +291,9 @@ export function App() {
       return updateWordResponse;
     } catch (error) {
       setWordErrorMessage(
-        error instanceof Error ? error.message : "The word could not be updated.",
+        error instanceof Error
+          ? error.message
+          : "The word could not be updated.",
       );
       return null;
     } finally {
@@ -319,9 +318,9 @@ export function App() {
   }
 
   async function loadNextExercise(
-    input: GetNextWordExerciseRequest = {
-      exerciseType: selectedExerciseType,
-    },
+    input: GetNextWordExerciseRequest = buildExerciseRequest(
+      selectedExerciseMode,
+    ),
   ) {
     if (sessionState.status !== "ready") {
       return;
@@ -333,7 +332,10 @@ export function App() {
     setExerciseResult(null);
 
     try {
-      const exerciseResponse = await getNextWordExercise(sessionState.user.id, input);
+      const exerciseResponse = await getNextWordExercise(
+        sessionState.user.id,
+        input,
+      );
 
       setCurrentExercise(exerciseResponse.exercise);
       setSessionState((currentState) =>
@@ -365,10 +367,13 @@ export function App() {
     setExerciseErrorMessage(null);
 
     try {
-      const submissionResponse = await submitWordExercise(sessionState.user.id, {
-        answer,
-        exerciseId: currentExercise.exerciseId,
-      });
+      const submissionResponse = await submitWordExercise(
+        sessionState.user.id,
+        {
+          answer,
+          exerciseId: currentExercise.exerciseId,
+        },
+      );
 
       setExerciseResult(submissionResponse.result);
       setSessionState((currentState) =>
@@ -381,7 +386,9 @@ export function App() {
       );
     } catch (error) {
       setExerciseErrorMessage(
-        error instanceof Error ? error.message : "The answer could not be checked.",
+        error instanceof Error
+          ? error.message
+          : "The answer could not be checked.",
       );
     } finally {
       setIsExerciseSubmitting(false);
@@ -394,13 +401,21 @@ export function App() {
     setCurrentExercise(null);
     setExerciseErrorMessage(null);
     setExerciseResult(null);
+    setSelectedExerciseMode(null);
     setSessionState({ status: "signed_out" });
     setWordErrorMessage(null);
     setWords([]);
   }
 
-  function handleSelectExerciseType(exerciseType: DocumentedExerciseType) {
-    setSelectedExerciseType(exerciseType);
+  function handleSelectExerciseMode(exerciseMode: ExerciseMode) {
+    setSelectedExerciseMode(exerciseMode);
+    setCurrentExercise(null);
+    setExerciseErrorMessage(null);
+    setExerciseResult(null);
+  }
+
+  function handleResetExerciseMode() {
+    setSelectedExerciseMode(null);
     setCurrentExercise(null);
     setExerciseErrorMessage(null);
     setExerciseResult(null);
@@ -421,9 +436,6 @@ export function App() {
     return (
       <I18nProvider locale={appLocale}>
         <main className="min-h-screen px-6 py-10 text-slate-950 dark:text-stone-100">
-          <div className="mx-auto flex max-w-5xl justify-end">
-            <ThemeToggle mode={themeMode} onToggle={handleToggleTheme} />
-          </div>
           <section className="mx-auto flex min-h-[70vh] max-w-4xl items-center justify-center">
             <div className="rounded-[2rem] border border-white/80 bg-white/85 px-8 py-10 text-center shadow-[0_25px_90px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/6 dark:shadow-[0_28px_90px_rgba(0,0,0,0.34)]">
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-700 dark:text-amber-300">
@@ -443,9 +455,6 @@ export function App() {
     return (
       <I18nProvider locale={appLocale}>
         <main className="min-h-screen px-4 py-6 text-slate-950 dark:text-stone-100 sm:px-6">
-          <div className="mx-auto flex max-w-5xl justify-end">
-            <ThemeToggle mode={themeMode} onToggle={handleToggleTheme} />
-          </div>
           <section className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-3xl items-center justify-center">
             <div className="w-full">
               <div className="mx-auto mb-8 flex max-w-xl flex-col items-center text-center">
@@ -509,30 +518,46 @@ export function App() {
         <SidebarInset>
           <main className="min-h-screen p-3 lg:p-4">
             <div className="flex min-h-[calc(100vh-1.5rem)] flex-col gap-3 lg:min-h-[calc(100vh-2rem)]">
-              <div className="flex flex-col gap-2 rounded-[1.1rem] border border-white/80 bg-white/80 p-2 shadow-sm dark:border-white/10 dark:bg-white/6 dark:shadow-[0_18px_50px_rgba(0,0,0,0.26)] lg:hidden sm:flex-row sm:items-center">
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                  <SidebarTrigger />
-                  <div className="grid min-w-0 flex-1 grid-cols-2 gap-2">
+              <div className="sticky top-3 z-20 lg:hidden">
+                <div className="rounded-[1.35rem] border border-white/80 bg-white/85 p-3 shadow-[0_18px_50px_rgba(15,23,42,0.12)] backdrop-blur dark:border-white/10 dark:bg-[rgba(28,21,18,0.88)] dark:shadow-[0_18px_50px_rgba(0,0,0,0.3)]">
+                  <div className="flex items-center gap-3">
+                    <SidebarTrigger className="h-11 w-11 rounded-2xl bg-white/75 dark:bg-white/8" />
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-900 shadow-[0_12px_28px_rgba(217,119,6,0.18)] dark:bg-[#9f561c] dark:text-[#fff7ef] dark:shadow-[0_14px_30px_rgba(66,28,8,0.35)]">
+                        <Sparkles className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-slate-950 dark:text-stone-100">
+                          Grammarian
+                        </p>
+                        <p className="truncate text-xs text-slate-500 dark:text-stone-400">
+                          {sessionState.user.displayName}
+                        </p>
+                      </div>
+                    </div>
+                    <ThemeToggle
+                      className="h-11 w-11 rounded-2xl border-slate-200 bg-white/75 dark:border-white/12 dark:bg-white/8"
+                      compact
+                      mode={themeMode}
+                      onToggle={handleToggleTheme}
+                    />
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2 rounded-[1.1rem] bg-slate-100/80 p-1 dark:bg-white/[0.06]">
                     <MobileViewButton
                       active={activeView === "dictionary"}
+                      icon={BookMarked}
                       label={messages.dictionary}
                       onClick={() => setActiveView("dictionary")}
                     />
                     <MobileViewButton
                       active={activeView === "exercises"}
+                      icon={BrainCircuit}
                       label={messages.exercises}
                       onClick={() => setActiveView("exercises")}
                     />
                   </div>
                 </div>
-                <ThemeToggle compact mode={themeMode} onToggle={handleToggleTheme} />
-                <Button
-                  className="w-full rounded-xl px-3 py-2 sm:w-auto"
-                  onClick={handleLogout}
-                  variant="ghost"
-                >
-                  {messages.logOut}
-                </Button>
               </div>
 
               <div className="min-h-0 flex-1">
@@ -554,11 +579,11 @@ export function App() {
                     isLoadingExercise={isExerciseLoading}
                     isSubmittingAnswer={isExerciseSubmitting}
                     onLoadNextExercise={loadNextExercise}
+                    onResetExerciseMode={handleResetExerciseMode}
                     onRetryExercise={handleRetryExercise}
-                    onSelectExerciseType={handleSelectExerciseType}
+                    onSelectExerciseMode={handleSelectExerciseMode}
                     onSubmitAnswer={handleSubmitExercise}
-                    progress={progress}
-                    selectedExerciseType={selectedExerciseType}
+                    selectedExerciseMode={selectedExerciseMode}
                     themeMode={themeMode}
                     wordCount={words.length}
                   />
@@ -574,23 +599,26 @@ export function App() {
 
 function MobileViewButton({
   active,
+  icon: Icon,
   label,
   onClick,
 }: {
   active: boolean;
+  icon: LucideIcon;
   label: string;
   onClick: () => void;
 }) {
   return (
     <button
-      className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
+      className={`flex items-center justify-center gap-2 rounded-[0.95rem] px-3 py-3 text-[13px] font-medium transition ${
         active
-          ? "border-slate-900 bg-slate-900 text-white dark:border-amber-300 dark:bg-amber-300 dark:text-stone-950"
-          : "border-slate-200 bg-white text-slate-700 dark:border-white/12 dark:bg-white/6 dark:text-stone-200"
+          ? "bg-white text-slate-950 shadow-[0_10px_24px_rgba(15,23,42,0.12)] dark:bg-amber-300 dark:text-stone-950 dark:shadow-[0_12px_24px_rgba(0,0,0,0.28)]"
+          : "text-slate-700 hover:bg-white/70 dark:text-stone-200 dark:hover:bg-white/8"
       }`}
       onClick={onClick}
       type="button"
     >
+      <Icon className="h-4 w-4 shrink-0" />
       {label}
     </button>
   );
@@ -599,5 +627,19 @@ function MobileViewButton({
 function readStoredPreferredLanguage(): AppLocale {
   const storedValue = window.localStorage.getItem(preferredLanguageStorageKey);
 
-  return storedValue && isAppLocale(storedValue) ? storedValue : defaultAppLocale;
+  return storedValue && isAppLocale(storedValue)
+    ? storedValue
+    : defaultAppLocale;
+}
+
+function buildExerciseRequest(
+  exerciseMode: ExerciseMode | null,
+): GetNextWordExerciseRequest {
+  if (!exerciseMode || exerciseMode === "random") {
+    return {};
+  }
+
+  return {
+    exerciseType: exerciseMode,
+  };
 }

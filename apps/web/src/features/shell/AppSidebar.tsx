@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useI18n } from "@/lib/i18n";
 import type { AppThemeMode } from "@/lib/theme";
@@ -44,7 +45,8 @@ export function AppSidebar({
   themeMode,
   user,
 }: AppSidebarProps) {
-  const { formatDateTime, messages } = useI18n();
+  const { messages } = useI18n();
+  const { isMobile, setOpenMobile } = useSidebar();
   const navigationItems = [
     {
       icon: BookMarked,
@@ -82,7 +84,13 @@ export function AppSidebar({
                 <SidebarMenuItem key={item.value}>
                   <SidebarMenuButton
                     isActive={activeView === item.value}
-                    onClick={() => onChangeView(item.value)}
+                    onClick={() => {
+                      onChangeView(item.value);
+
+                      if (isMobile) {
+                        setOpenMobile(false);
+                      }
+                    }}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
                     <span>{item.label}</span>
@@ -95,15 +103,11 @@ export function AppSidebar({
 
         <SidebarGroup>
           <div className="rounded-xl border border-white/80 bg-white/70 p-3 text-sm text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-stone-300">
-            <p className="font-medium text-slate-900 dark:text-stone-100">
-              {messages.wordsSummary(progress.totalWords)}
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-stone-400">
+              {messages.savedWords}
             </p>
-            <p className="mt-1">
-              {progress.dueReviewCount > 0
-                ? messages.dueNowCount(progress.dueReviewCount)
-                : progress.nextReviewAt
-                  ? messages.nextReview(formatDateTime(progress.nextReviewAt))
-                  : messages.noReviewsScheduled}
+            <p className="mt-1 font-medium text-slate-900 dark:text-stone-100">
+              {messages.wordsSummary(progress.totalWords)}
             </p>
           </div>
         </SidebarGroup>
@@ -150,7 +154,13 @@ export function AppSidebar({
 
           <Button
             className="mt-3 w-full rounded-xl px-4 py-2.5"
-            onClick={onLogout}
+            onClick={() => {
+              onLogout();
+
+              if (isMobile) {
+                setOpenMobile(false);
+              }
+            }}
             variant="ghost"
           >
             <LogOut className="mr-2 h-4 w-4" />

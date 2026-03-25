@@ -16,11 +16,6 @@ import {
 
 import { AppError } from "../errors/app-error.js";
 import {
-  getNextScheduledReviewAt,
-  isWordReviewDue,
-  type StoredWordReviewSchedule,
-} from "./word-review.js";
-import {
   normalizeStoredChinese,
   normalizeStoredTranslation,
 } from "./word-intake.js";
@@ -42,18 +37,12 @@ const exerciseKinds: WordExerciseKind[] = ["recognition", "writing", "pinyin"];
 export function buildStudyProgressSummary(
   words: StudyWord[],
   attempts: StoredExerciseAttempt[],
-  reviewSchedules: StoredWordReviewSchedule[],
 ): StudyProgressSummary {
   const correctAttempts = attempts.filter((attempt) => attempt.isCorrect).length;
-  const dueReviewCount = reviewSchedules.filter((schedule) =>
-    isWordReviewDue(schedule),
-  ).length;
 
   return {
     correctAttempts,
-    dueReviewCount,
     incorrectAttempts: attempts.length - correctAttempts,
-    nextReviewAt: getNextScheduledReviewAt(reviewSchedules),
     totalAttempts: attempts.length,
     totalWords: words.length,
   };
@@ -62,7 +51,6 @@ export function buildStudyProgressSummary(
 export function buildNextWordExercise(
   words: StudyWord[],
   attempts: StoredExerciseAttempt[],
-  reviewSchedules: StoredWordReviewSchedule[],
   locale: AppLocale,
   requestedExerciseType?: DocumentedExerciseType,
 ): WordExercise {
@@ -74,28 +62,12 @@ export function buildNextWordExercise(
     throw new AppError(400, getUnsupportedExerciseTypeMessage(requestedExerciseType));
   }
 
-  const referenceTime = new Date();
-  const scheduleByWordId = new Map(
-    reviewSchedules.map((schedule) => [schedule.wordId, schedule]),
-  );
   const sortedWords = [...words].sort((left, right) =>
     left.createdAt.localeCompare(right.createdAt),
   );
-  const dueWords = sortedWords
-    .filter((word) => {
-      const schedule = scheduleByWordId.get(word.id);
-
-      return schedule ? isWordReviewDue(schedule, referenceTime) : true;
-    })
-    .sort((left, right) =>
-      compareScheduledWords(left, right, attempts, scheduleByWordId),
-    );
-  const candidateWords =
-    dueWords.length > 0
-      ? dueWords
-      : sortedWords.sort((left, right) =>
-          compareScheduledWords(left, right, attempts, scheduleByWordId),
-        );
+  const candidateWords = sortedWords.sort((left, right) =>
+    compareCandidateWords(left, right, attempts),
+  );
   const targetWord = candidateWords[0];
 
   if (!targetWord) {
@@ -108,12 +80,11 @@ export function buildNextWordExercise(
 
   const kind = requestedExerciseType
     ? mapExerciseTypeToWordKind(requestedExerciseType)
-    : exerciseKinds[targetAttemptCount % exerciseKinds.length] ?? "recognition";
+    : pickRandomExerciseKind(targetAttemptCount);
 
   return buildExercise(
     targetWord,
     kind,
-    dueWords.length > 0 ? "due" : "scheduled",
     locale,
     mapWordKindToExerciseType(kind),
   );
@@ -251,7 +222,6 @@ export function createExerciseFeedback(result: {
 function buildExercise(
   word: StudyWord,
   kind: WordExerciseKind,
-  queueMode: WordExercise["queueMode"],
   locale: AppLocale,
   exerciseType: SupportedWordExerciseType,
 ): WordExercise {
@@ -267,7 +237,6 @@ function buildExercise(
       kind,
       promptSecondaryText: messages.recognitionSecondary,
       promptText: messages.recognitionPrompt(word.simplified),
-      queueMode,
       wordId: word.id,
     };
   }
@@ -284,7 +253,6 @@ function buildExercise(
       kind,
       promptSecondaryText: `${messages.pinyinLabel}: ${word.pinyinCanonical}`,
       promptText: messages.writingPrompt(word.translation),
-      queueMode,
       traceCharacters: traceCharacters ?? undefined,
       wordId: word.id,
     };
@@ -299,7 +267,6 @@ function buildExercise(
     kind,
     promptSecondaryText: messages.pinyinSecondary,
     promptText: messages.pinyinPrompt(word.simplified),
-    queueMode,
     wordId: word.id,
   };
 }
@@ -332,21 +299,11 @@ function mapWordKindToExerciseType(
   return "pinyin_recognition";
 }
 
-function compareScheduledWords(
+function compareCandidateWords(
   leftWord: StudyWord,
   rightWord: StudyWord,
   attempts: StoredExerciseAttempt[],
-  scheduleByWordId: Map<string, StoredWordReviewSchedule>,
 ) {
-  const leftSchedule = scheduleByWordId.get(leftWord.id);
-  const rightSchedule = scheduleByWordId.get(rightWord.id);
-  const leftNextReviewAt = leftSchedule?.nextReviewAt ?? leftWord.createdAt;
-  const rightNextReviewAt = rightSchedule?.nextReviewAt ?? rightWord.createdAt;
-
-  if (leftNextReviewAt !== rightNextReviewAt) {
-    return leftNextReviewAt.localeCompare(rightNextReviewAt);
-  }
-
   const leftAttemptCount = attempts.filter(
     (attempt) => attempt.wordId === leftWord.id,
   ).length;
@@ -359,6 +316,16 @@ function compareScheduledWords(
   }
 
   return leftWord.createdAt.localeCompare(rightWord.createdAt);
+}
+
+function pickRandomExerciseKind(targetAttemptCount: number) {
+  const randomIndex = Math.floor(Math.random() * exerciseKinds.length);
+
+  return (
+    exerciseKinds[randomIndex] ??
+    exerciseKinds[targetAttemptCount % exerciseKinds.length] ??
+    "recognition"
+  );
 }
 
 function buildAcceptedTranslationAnswers(

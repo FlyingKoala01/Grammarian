@@ -10,15 +10,6 @@ export interface StudyWord {
   createdAt: string;
 }
 
-export interface StudyWordReviewState {
-  isDue: boolean;
-  nextReviewAt: string;
-}
-
-export interface ListedStudyWord extends StudyWord {
-  review: StudyWordReviewState;
-}
-
 export interface WordDraft {
   simplified: string;
   pinyinCanonical: string;
@@ -43,16 +34,16 @@ export interface WordValidationResult {
 
 export interface CreateWordResponse {
   validation: WordValidationResult;
-  word: ListedStudyWord;
+  word: StudyWord;
 }
 
 export interface UpdateWordResponse {
   validation: WordValidationResult;
-  word: ListedStudyWord;
+  word: StudyWord;
 }
 
 export interface ListWordsResponse {
-  words: ListedStudyWord[];
+  words: StudyWord[];
 }
 
 export type WordDraftField = keyof WordDraft;

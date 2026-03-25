@@ -26,14 +26,13 @@ class AuthService {
       throw new Error("The learner could not be loaded after login.");
     }
 
-    const [attempts, reviewSchedules, words] = await Promise.all([
+    const [attempts, words] = await Promise.all([
       studyRepository.listExerciseAttemptsByUserId(user.id),
-      studyRepository.listReviewSchedulesByUserId(user.id),
       studyRepository.listWordsByUserId(user.id),
     ]);
 
     return {
-      progress: buildStudyProgressSummary(words, attempts, reviewSchedules),
+      progress: buildStudyProgressSummary(words, attempts),
       user,
     };
   }

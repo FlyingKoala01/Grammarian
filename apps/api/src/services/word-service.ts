@@ -14,7 +14,6 @@ import {
   normalizeStoredPinyin,
   normalizeStoredTranslation,
 } from "../domain/word-intake.js";
-import { buildListedStudyWords } from "../domain/word-review.js";
 import { AppError } from "../errors/app-error.js";
 import { studyRepository } from "../repositories/index.js";
 import { wordIntakeService } from "./word-intake-service.js";
@@ -42,13 +41,8 @@ class WordService {
       translationLanguage: user.preferredLanguage,
       userId,
     });
-    const listedWord = await this.buildListedWord(userId, word);
 
-    if (!listedWord) {
-      throw new AppError(500, "The saved word could not be loaded.");
-    }
-
-    return { validation, word: listedWord };
+    return { validation, word };
   }
 
   async updateWord(
@@ -84,25 +78,14 @@ class WordService {
       throw new AppError(404, "Word not found.");
     }
 
-    const listedWord = await this.buildListedWord(userId, word);
-
-    if (!listedWord) {
-      throw new AppError(500, "The updated word could not be loaded.");
-    }
-
-    return { validation, word: listedWord };
+    return { validation, word };
   }
 
   async listWords(userId: string): Promise<ListWordsResponse> {
     await this.requireUser(userId);
 
-    const [reviewSchedules, words] = await Promise.all([
-      studyRepository.listReviewSchedulesByUserId(userId),
-      studyRepository.listWordsByUserId(userId),
-    ]);
-
     return {
-      words: buildListedStudyWords(words, reviewSchedules),
+      words: await studyRepository.listWordsByUserId(userId),
     };
   }
 
@@ -133,11 +116,6 @@ class WordService {
       normalizedWord,
       preferredLanguage,
     );
-  }
-
-  private async buildListedWord(userId: string, word: StudyWord) {
-    const reviewSchedules = await studyRepository.listReviewSchedulesByUserId(userId);
-    return buildListedStudyWords([word], reviewSchedules)[0];
   }
 }
 

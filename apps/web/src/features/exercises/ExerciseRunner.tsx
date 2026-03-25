@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import type {
   DocumentedExerciseType,
-  StudyProgressSummary,
   WordExercise,
   WordExerciseResult,
 } from "@grammarian/shared";
@@ -11,7 +10,16 @@ import {
   isSupportedWordExerciseType,
 } from "@grammarian/shared";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import type { ExerciseMode } from "@/features/exercises/exercise-mode";
 import { HanziTracePad } from "@/features/exercises/HanziTracePad";
 import { PinyinField } from "@/features/words/PinyinField";
 import type { AppMessages } from "@/lib/i18n";
@@ -25,14 +33,22 @@ interface ExerciseRunnerProps {
   isLoadingExercise: boolean;
   isSubmittingAnswer: boolean;
   onLoadNextExercise: () => void | Promise<void>;
+  onResetExerciseMode: () => void;
   onRetryExercise: () => void;
-  onSelectExerciseType: (exerciseType: DocumentedExerciseType) => void;
+  onSelectExerciseMode: (exerciseMode: ExerciseMode) => void;
   onSubmitAnswer: (answer: string) => void | Promise<void>;
-  progress: StudyProgressSummary;
-  selectedExerciseType: DocumentedExerciseType;
+  selectedExerciseMode: ExerciseMode | null;
   themeMode: AppThemeMode;
   wordCount: number;
 }
+
+type ExerciseOption = {
+  description: string;
+  id: ExerciseMode;
+  isAvailable: boolean;
+  label: string;
+  unavailableMessage: string;
+};
 
 export function ExerciseRunner({
   currentExercise,
@@ -41,15 +57,15 @@ export function ExerciseRunner({
   isLoadingExercise,
   isSubmittingAnswer,
   onLoadNextExercise,
+  onResetExerciseMode,
   onRetryExercise,
-  onSelectExerciseType,
+  onSelectExerciseMode,
   onSubmitAnswer,
-  progress,
-  selectedExerciseType,
+  selectedExerciseMode,
   themeMode,
   wordCount,
 }: ExerciseRunnerProps) {
-  const { formatDateTime, messages } = useI18n();
+  const { messages } = useI18n();
   const [answer, setAnswer] = useState("");
   const [failedSubmissionCount, setFailedSubmissionCount] = useState(0);
   const [useTraceTextFallback, setUseTraceTextFallback] = useState(false);
@@ -80,15 +96,23 @@ export function ExerciseRunner({
     currentExercise?.answerMode === "trace_character" &&
     Boolean(currentExercise.traceCharacters?.length) &&
     !useTraceTextFallback;
+  const showChooser = selectedExerciseMode === null;
+  const selectedOption = selectedExerciseMode
+    ? exerciseOptions.find((option) => option.id === selectedExerciseMode) ?? null
+    : null;
+  const currentExerciseOption = currentExercise
+    ? exerciseOptions.find((option) => option.id === currentExercise.exerciseType) ?? null
+    : null;
+  const isSupportedSelection =
+    selectedExerciseMode === "random" ||
+    (selectedExerciseMode
+      ? isSupportedWordExerciseType(selectedExerciseMode)
+      : false);
+  const canLoadExercise = wordCount > 0 && !showChooser && isSupportedSelection;
   const exerciseHint =
     currentExercise && exerciseResult && !exerciseResult.isCorrect && failedSubmissionCount >= 2
       ? buildExerciseHint(currentExercise, exerciseResult, messages)
       : null;
-  const selectedOption =
-    exerciseOptions.find((option) => option.id === selectedExerciseType) ??
-    exerciseOptions[0]!;
-  const isSupportedSelection = isSupportedWordExerciseType(selectedOption.id);
-  const canLoadExercise = wordCount > 0 && isSupportedSelection;
   const feedbackClasses = exerciseResult
     ? exerciseResult.isCorrect
       ? {
@@ -104,113 +128,221 @@ export function ExerciseRunner({
           title: "text-rose-950 dark:text-rose-50",
         }
     : null;
+  const exercisePanelContent = exerciseResult ? (
+    <div className="space-y-4">
+      <div
+        className={`rounded-[1.25rem] border px-4 py-4 ${feedbackClasses?.container ?? ""}`}
+      >
+        <p className={`text-lg font-semibold ${feedbackClasses?.title ?? "text-slate-950 dark:text-stone-50"}`}>
+          {exerciseResult.feedbackShort}
+        </p>
+        <p className={`mt-2 text-sm leading-7 ${feedbackClasses?.detail ?? "text-slate-700 dark:text-stone-200"}`}>
+          {exerciseResult.feedbackDetailed}
+        </p>
+      </div>
+
+      <AnswerTile
+        label={messages.yourAnswer}
+        value={exerciseResult.normalizedAnswer}
+      />
+      <AnswerTile label={messages.expected} value={exerciseResult.idealAnswer} />
+      <AnswerTile label={messages.fieldHanzi} value={exerciseResult.word.simplified} />
+      <AnswerTile
+        label={messages.fieldPinyin}
+        value={exerciseResult.word.pinyinCanonical}
+      />
+      <AnswerTile label={messages.meaning} value={exerciseResult.word.translation} />
+      {exerciseHint ? (
+        <SideNote label={messages.exerciseHint} value={exerciseHint} />
+      ) : null}
+
+      {canLoadExercise ? (
+        <Button className="w-full rounded-xl" onClick={onLoadNextExercise}>
+          {messages.nextExercise}
+        </Button>
+      ) : null}
+      {!exerciseResult.isCorrect ? (
+        <Button
+          className="w-full rounded-xl"
+          onClick={() => {
+            setAnswer("");
+            onRetryExercise();
+          }}
+          variant="outline"
+        >
+          {messages.retryExercise}
+        </Button>
+      ) : null}
+    </div>
+  ) : showChooser ? (
+    <div className="space-y-3">
+      <SideNote label={messages.exercises} value={messages.exerciseChooseMode} />
+      <SideNote
+        label={messages.exerciseOptionRandomLabel}
+        value={messages.exerciseOptionRandomDescription}
+      />
+    </div>
+  ) : currentExercise ? (
+    <div className="space-y-3">
+      {selectedOption?.id === "random" ? (
+        <SideNote label={selectedOption.label} value={selectedOption.description} />
+      ) : null}
+      <SideNote
+        label={currentExerciseOption?.label ?? selectedOption?.label ?? messages.exercises}
+        value={
+          currentExerciseOption?.description ??
+          selectedOption?.description ??
+          messages.exerciseChooseMode
+        }
+      />
+      <SideNote
+        label={messages.answerWith}
+        value={
+          isTraceExercise
+            ? messages.traceAnswerWith
+            : currentExercise.inputLabel
+        }
+      />
+      <SideNote
+        label={messages.placeholder}
+        value={
+          isTraceExercise
+            ? messages.traceInstructions
+            : currentExercise.inputPlaceholder
+        }
+      />
+      {currentExercise.kind === "pinyin" ? (
+        <SideNote
+          label={messages.fieldPinyin}
+          value={messages.pinyinAnswerHint}
+        />
+      ) : null}
+    </div>
+  ) : (
+    <div className="space-y-3">
+      <SideNote
+        label={selectedOption?.label ?? messages.exercises}
+        value={selectedOption?.description ?? messages.exerciseChooseMode}
+      />
+      <SideNote
+        label={messages.exerciseImplementationStatus}
+        value={
+          selectedOption?.isAvailable
+            ? messages.exerciseImplementedInfo
+            : selectedOption?.unavailableMessage ?? messages.exerciseChooseMode
+        }
+      />
+    </div>
+  );
 
   return (
     <section className="grid h-full min-h-0 gap-3 xl:grid-cols-[minmax(0,1fr)_24rem]">
       <div className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col xl:p-8">
         <div className="border-b border-slate-200 pb-5 dark:border-white/10">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              {currentExercise ? (
-                <span className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
-                  {selectedOption.label}
+          {showChooser ? (
+            <>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-stone-400">
+                    {messages.exercises}
+                  </p>
+                  <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600 dark:text-stone-300">
+                    {messages.exerciseChooseMode}
+                  </p>
+                </div>
+                <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-white/10 dark:bg-white/6 dark:text-stone-200">
+                  {messages.wordsCount(wordCount)}
                 </span>
-              ) : null}
-              {currentExercise ? (
-                <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-100">
-                  {currentExercise.queueMode === "due"
-                    ? messages.dueNow
-                    : messages.reviewScheduled}
-                </span>
-              ) : null}
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-white/10 dark:bg-white/6 dark:text-stone-200">
-                {messages.wordsCount(wordCount)}
-              </span>
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-white/10 dark:bg-white/6 dark:text-stone-200">
-                {formatReviewQueueSummary(progress, messages, formatDateTime)}
-              </span>
-            </div>
+              </div>
 
-            {canLoadExercise ? (
-              <Button className="rounded-xl" onClick={onLoadNextExercise}>
-                {currentExercise || exerciseResult ? messages.next : messages.loadExercise}
-              </Button>
-            ) : null}
-          </div>
-
-          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {exerciseOptions.map((option) => {
-              const isActive = selectedExerciseType === option.id;
-
-              return (
-                <button
-                  className={`rounded-[1.2rem] border px-4 py-4 text-left transition ${
-                    isActive
-                      ? "border-slate-900 bg-slate-900 text-white dark:border-[#b67742] dark:bg-[#3a2819] dark:text-amber-50 dark:shadow-[0_20px_45px_rgba(0,0,0,0.28)]"
-                      : "border-slate-200 bg-slate-50 text-slate-900 hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:text-stone-100 dark:hover:border-white/20"
-                  }`}
-                  key={option.id}
-                  onClick={() => onSelectExerciseType(option.id)}
-                  type="button"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold">{option.label}</p>
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
-                        isActive
-                          ? "bg-white/15 text-white dark:bg-amber-100/10 dark:text-amber-100"
-                          : option.isAvailable
+              <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {exerciseOptions.map((option) => (
+                  <button
+                    className="rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-4 text-left text-slate-900 transition hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:text-stone-100 dark:hover:border-white/20"
+                    key={option.id}
+                    onClick={() => onSelectExerciseMode(option.id)}
+                    type="button"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-semibold">{option.label}</p>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                          option.isAvailable
                             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-100"
                             : "bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-stone-400"
-                      }`}
-                    >
-                      {option.isAvailable
-                        ? messages.exerciseStatusAvailable
-                        : messages.exerciseStatusPlanned}
-                    </span>
-                  </div>
-                  <p
-                    className={`mt-3 text-sm leading-6 ${
-                      isActive ? "text-white/82 dark:text-amber-50/80" : "text-slate-600 dark:text-stone-300"
-                    }`}
-                  >
-                    {option.description}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+                        }`}
+                      >
+                        {option.isAvailable
+                          ? messages.exerciseStatusAvailable
+                          : messages.exerciseStatusPlanned}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-stone-300">
+                      {option.description}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink onClick={onResetExerciseMode}>
+                        {messages.exercises}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{selectedOption?.label ?? messages.exercises}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+
+              {canLoadExercise ? (
+                <Button className="rounded-xl" onClick={onLoadNextExercise}>
+                  {currentExercise || exerciseResult ? messages.next : messages.loadExercise}
+                </Button>
+              ) : null}
+            </div>
+          )}
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col pt-6">
-          {wordCount === 0 ? (
+          {showChooser ? (
+            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-stone-300">
+              {wordCount === 0 ? messages.exerciseEmpty : messages.exerciseChooseMode}
+            </div>
+          ) : wordCount === 0 ? (
             <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/14 dark:bg-white/5 dark:text-stone-300">
               {messages.exerciseEmpty}
             </div>
-          ) : null}
-
-          {wordCount > 0 && !isSupportedSelection ? (
+          ) : !isSupportedSelection ? (
             <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/14 dark:bg-white/5 dark:text-stone-300">
               {selectedOption?.unavailableMessage ??
                 "This exercise family is planned, but it still needs dedicated content and generation logic."}
             </div>
-          ) : null}
-
-          {canLoadExercise && isLoadingExercise ? (
+          ) : isLoadingExercise ? (
             <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-stone-300">
               {messages.exerciseLoading}
             </div>
-          ) : null}
-
-          {canLoadExercise && !isLoadingExercise && !currentExercise ? (
+          ) : !currentExercise ? (
             <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-stone-300">
-              {selectedOption.description}
+              {selectedOption?.description ?? messages.exerciseChooseMode}
             </div>
-          ) : null}
-
-          {canLoadExercise && !isLoadingExercise && currentExercise ? (
+          ) : (
             <div className="flex min-h-0 flex-1 flex-col justify-between gap-6">
-              <div>
+              <div className="space-y-5">
+                {exerciseResult ? (
+                  <div className="xl:hidden">
+                    {exercisePanelContent}
+                  </div>
+                ) : null}
+
+                <div>
                 <h2 className="max-w-4xl text-3xl font-semibold leading-tight text-slate-950 dark:text-stone-50 sm:text-4xl lg:text-5xl">
                   {currentExercise.promptText}
                 </h2>
@@ -219,10 +351,11 @@ export function ExerciseRunner({
                     {currentExercise.promptSecondaryText}
                   </p>
                 ) : null}
+                </div>
               </div>
 
               <form className="space-y-4" onSubmit={handleSubmit}>
-                {isTraceExercise && currentExercise?.traceCharacters?.length ? (
+                {isTraceExercise && currentExercise.traceCharacters?.length ? (
                   <HanziTracePad
                     characters={currentExercise.traceCharacters}
                     disabled={isSubmittingAnswer || Boolean(exerciseResult)}
@@ -274,105 +407,12 @@ export function ExerciseRunner({
                 ) : null}
               </form>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
 
-      <aside className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col">
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {exerciseResult ? (
-            <div className="space-y-4">
-              <div
-                className={`rounded-[1.25rem] border px-4 py-4 ${feedbackClasses?.container ?? ""}`}
-              >
-                <p className={`text-lg font-semibold ${feedbackClasses?.title ?? "text-slate-950 dark:text-stone-50"}`}>
-                  {exerciseResult.feedbackShort}
-                </p>
-                <p className={`mt-2 text-sm leading-7 ${feedbackClasses?.detail ?? "text-slate-700 dark:text-stone-200"}`}>
-                  {exerciseResult.feedbackDetailed}
-                </p>
-              </div>
-
-              <AnswerTile
-                label={messages.yourAnswer}
-                value={exerciseResult.normalizedAnswer}
-              />
-              <AnswerTile label={messages.expected} value={exerciseResult.idealAnswer} />
-              <AnswerTile label={messages.fieldHanzi} value={exerciseResult.word.simplified} />
-              <AnswerTile
-                label={messages.fieldPinyin}
-                value={exerciseResult.word.pinyinCanonical}
-              />
-              <AnswerTile label={messages.meaning} value={exerciseResult.word.translation} />
-              {exerciseHint ? (
-                <SideNote label={messages.exerciseHint} value={exerciseHint} />
-              ) : null}
-
-              {canLoadExercise ? (
-                <Button className="w-full rounded-xl" onClick={onLoadNextExercise}>
-                  {messages.nextExercise}
-                </Button>
-              ) : null}
-              {!exerciseResult.isCorrect ? (
-                <Button
-                  className="w-full rounded-xl"
-                  onClick={() => {
-                    setAnswer("");
-                    onRetryExercise();
-                  }}
-                  variant="outline"
-                >
-                  {messages.retryExercise}
-                </Button>
-              ) : null}
-            </div>
-          ) : currentExercise ? (
-            <div className="space-y-3">
-              <SideNote
-                label={selectedOption.label}
-                value={selectedOption.description}
-              />
-              <SideNote
-                label={messages.reviewQueue}
-                value={formatReviewQueueDetail(progress, messages, formatDateTime)}
-              />
-              <SideNote
-                label={messages.answerWith}
-                value={
-                  isTraceExercise
-                    ? messages.traceAnswerWith
-                    : currentExercise.inputLabel
-                }
-              />
-              <SideNote
-                label={messages.placeholder}
-                value={
-                  isTraceExercise
-                    ? messages.traceInstructions
-                    : currentExercise.inputPlaceholder
-                }
-              />
-              {currentExercise.kind === "pinyin" ? (
-                <SideNote
-                  label={messages.fieldPinyin}
-                  value={messages.pinyinAnswerHint}
-                />
-              ) : null}
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <SideNote label={selectedOption.label} value={selectedOption.description} />
-              <SideNote
-                label={messages.exerciseImplementationStatus}
-                value={
-                  selectedOption.isAvailable
-                    ? messages.exerciseImplementedInfo
-                    : selectedOption.unavailableMessage
-                }
-              />
-            </div>
-          )}
-        </div>
+      <aside className="hidden min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col">
+        <div className="min-h-0 flex-1 overflow-y-auto">{exercisePanelContent}</div>
       </aside>
     </section>
   );
@@ -415,51 +455,42 @@ function buildExerciseOptions(messages: Pick<
   | "exerciseOptionGapFillUnavailableMessage"
   | "exerciseOptionPinyinRecognitionDescription"
   | "exerciseOptionPinyinRecognitionLabel"
+  | "exerciseOptionRandomDescription"
+  | "exerciseOptionRandomLabel"
   | "exerciseOptionSentenceUnderstandingDescription"
   | "exerciseOptionSentenceUnderstandingLabel"
   | "exerciseOptionSentenceUnderstandingUnavailableMessage"
->) {
+>): ExerciseOption[] {
   const optionByType: Record<
     DocumentedExerciseType,
-    {
-      description: string;
-      id: DocumentedExerciseType;
-      isAvailable: boolean;
-      label: string;
-      unavailableMessage: string;
-    }
+    Omit<ExerciseOption, "id">
   > = {
     character_recognition: {
       description: messages.exerciseOptionCharacterRecognitionDescription,
-      id: "character_recognition",
       isAvailable: true,
       label: messages.exerciseOptionCharacterRecognitionLabel,
       unavailableMessage: "",
     },
     character_writing: {
       description: messages.exerciseOptionCharacterWritingDescription,
-      id: "character_writing",
       isAvailable: true,
       label: messages.exerciseOptionCharacterWritingLabel,
       unavailableMessage: "",
     },
     gap_fill: {
       description: messages.exerciseOptionGapFillDescription,
-      id: "gap_fill",
       isAvailable: false,
       label: messages.exerciseOptionGapFillLabel,
       unavailableMessage: messages.exerciseOptionGapFillUnavailableMessage,
     },
     pinyin_recognition: {
       description: messages.exerciseOptionPinyinRecognitionDescription,
-      id: "pinyin_recognition",
       isAvailable: true,
       label: messages.exerciseOptionPinyinRecognitionLabel,
       unavailableMessage: "",
     },
     sentence_understanding: {
       description: messages.exerciseOptionSentenceUnderstandingDescription,
-      id: "sentence_understanding",
       isAvailable: false,
       label: messages.exerciseOptionSentenceUnderstandingLabel,
       unavailableMessage:
@@ -467,7 +498,19 @@ function buildExerciseOptions(messages: Pick<
     },
   };
 
-  return documentedExerciseTypes.map((exerciseType) => optionByType[exerciseType]);
+  return [
+    {
+      description: messages.exerciseOptionRandomDescription,
+      id: "random",
+      isAvailable: true,
+      label: messages.exerciseOptionRandomLabel,
+      unavailableMessage: "",
+    },
+    ...documentedExerciseTypes.map((exerciseType) => ({
+      id: exerciseType,
+      ...optionByType[exerciseType],
+    })),
+  ];
 }
 
 function buildExerciseHint(
@@ -518,44 +561,4 @@ function buildInitialsHint(parts: string[]) {
   return parts
     .map((part) => `${Array.from(part)[0] ?? ""}...`)
     .join(" ");
-}
-
-function formatReviewQueueSummary(
-  progress: StudyProgressSummary,
-  messages: {
-    dueNowCount: (count: number) => string;
-    nextReviewShort: (date: string) => string;
-    nothingDue: string;
-  },
-  formatDateTime: (value: string) => string,
-) {
-  if (progress.dueReviewCount > 0) {
-    return messages.dueNowCount(progress.dueReviewCount);
-  }
-
-  if (!progress.nextReviewAt) {
-    return messages.nothingDue;
-  }
-
-  return messages.nextReviewShort(formatDateTime(progress.nextReviewAt));
-}
-
-function formatReviewQueueDetail(
-  progress: StudyProgressSummary,
-  messages: {
-    nextReview: (date: string) => string;
-    reviewDueDetail: (count: number) => string;
-    reviewNothingDue: string;
-  },
-  formatDateTime: (value: string) => string,
-) {
-  if (progress.dueReviewCount > 0) {
-    return messages.reviewDueDetail(progress.dueReviewCount);
-  }
-
-  if (!progress.nextReviewAt) {
-    return messages.reviewNothingDue;
-  }
-
-  return messages.nextReview(formatDateTime(progress.nextReviewAt));
 }

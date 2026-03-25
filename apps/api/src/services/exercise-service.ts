@@ -12,7 +12,6 @@ import {
   evaluateWordExercise,
   parseExerciseId,
 } from "../domain/word-exercise.js";
-import { updateWordReviewSchedule } from "../domain/word-review.js";
 import { AppError } from "../errors/app-error.js";
 import { studyRepository } from "../repositories/index.js";
 
@@ -27,9 +26,8 @@ class ExerciseService {
       throw new AppError(404, "User not found.");
     }
 
-    const [attempts, reviewSchedules, words] = await Promise.all([
+    const [attempts, words] = await Promise.all([
       studyRepository.listExerciseAttemptsByUserId(userId),
-      studyRepository.listReviewSchedulesByUserId(userId),
       studyRepository.listWordsByUserId(userId),
     ]);
 
@@ -38,11 +36,10 @@ class ExerciseService {
       exercise: buildNextWordExercise(
         words,
         attempts,
-        reviewSchedules,
         user.preferredLanguage,
         exerciseType,
       ),
-      progress: buildStudyProgressSummary(words, attempts, reviewSchedules),
+      progress: buildStudyProgressSummary(words, attempts),
     };
   }
 
@@ -74,18 +71,14 @@ class ExerciseService {
       userId,
       wordId,
     });
-    await studyRepository.updateReviewScheduleForWord(userId, wordId, (schedule) =>
-      updateWordReviewSchedule(schedule, evaluation.isCorrect),
-    );
 
-    const [attempts, reviewSchedules, words] = await Promise.all([
+    const [attempts, words] = await Promise.all([
       studyRepository.listExerciseAttemptsByUserId(userId),
-      studyRepository.listReviewSchedulesByUserId(userId),
       studyRepository.listWordsByUserId(userId),
     ]);
 
     return {
-      progress: buildStudyProgressSummary(words, attempts, reviewSchedules),
+      progress: buildStudyProgressSummary(words, attempts),
       result: {
         ...createExerciseFeedback(evaluation, user.preferredLanguage),
         ...evaluation,
