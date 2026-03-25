@@ -39,10 +39,10 @@ export function DemoLoginCard({
   }
 
   return (
-    <section className="rounded-[2rem] border border-[#e6d8c8] bg-white/92 px-6 py-7 text-slate-950 shadow-[0_18px_48px_rgba(66,38,20,0.08)] sm:px-8 sm:py-8">
+    <section className="rounded-[2rem] border border-[#e6d8c8] bg-white/92 px-6 py-7 text-slate-950 shadow-[0_18px_48px_rgba(66,38,20,0.08)] dark:border-white/10 dark:bg-white/6 dark:text-stone-100 dark:shadow-[0_24px_60px_rgba(0,0,0,0.34)] sm:px-8 sm:py-8">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-[1.15rem] border border-[#e2c6a8] bg-[#faf5ee]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-[1.15rem] border border-[#e2c6a8] bg-[#faf5ee] dark:border-white/12 dark:bg-white/10">
             <img
               alt="Grammarian logo"
               className="h-8 w-8 object-contain"
@@ -50,10 +50,10 @@ export function DemoLoginCard({
             />
           </div>
           <div className="space-y-3">
-            <h2 className="text-2xl font-semibold leading-tight text-balance text-slate-950">
+            <h2 className="text-2xl font-semibold leading-tight text-balance text-slate-950 dark:text-stone-50">
               {messages.sessionTitle}
             </h2>
-            <FieldDescription className="mx-auto max-w-md text-center text-sm leading-7 text-slate-600">
+            <FieldDescription className="mx-auto max-w-md text-center text-sm leading-7 text-slate-600 dark:text-stone-300">
               {messages.demoLoginHelp}
             </FieldDescription>
           </div>
@@ -62,11 +62,11 @@ export function DemoLoginCard({
         <form className="relative" onSubmit={handleSubmit}>
           <FieldGroup className="gap-5">
             <Field>
-              <FieldLabel className="text-slate-700" htmlFor="preferred-language">
+              <FieldLabel className="text-slate-700 dark:text-stone-300" htmlFor="preferred-language">
                 {messages.language}
               </FieldLabel>
               <select
-                className="h-12 w-full rounded-[1.2rem] border border-[#d9c1a7] bg-[#fcfaf7] px-4 text-base text-slate-950 outline-none transition focus:border-[#c86b37]"
+                className="h-12 w-full rounded-[1.2rem] border border-[#d9c1a7] bg-[#fcfaf7] px-4 text-base text-slate-950 outline-none transition focus:border-[#c86b37] dark:border-white/12 dark:bg-white/8 dark:text-stone-100"
                 disabled={isSubmitting}
                 id="preferred-language"
                 onChange={(event) =>
@@ -80,18 +80,18 @@ export function DemoLoginCard({
                   </option>
                 ))}
               </select>
-              <FieldDescription className="text-sm leading-6 text-slate-600">
+              <FieldDescription className="text-sm leading-6 text-slate-600 dark:text-stone-400">
                 {messages.languageHelp}
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel className="text-slate-700" htmlFor="display-name">
+              <FieldLabel className="text-slate-700 dark:text-stone-300" htmlFor="display-name">
                 {messages.learnerName}
               </FieldLabel>
               <Input
                 autoComplete="off"
-                className="h-12 rounded-[1.2rem] border-[#d9c1a7] bg-[#fcfaf7] px-4 text-base text-slate-950 placeholder:text-slate-400 focus-visible:border-[#c86b37] focus-visible:ring-[#c86b37]/18"
+                className="h-12 rounded-[1.2rem] border-[#d9c1a7] bg-[#fcfaf7] px-4 text-base text-slate-950 placeholder:text-slate-400 focus-visible:border-[#c86b37] focus-visible:ring-[#c86b37]/18 dark:border-white/12 dark:bg-white/8 dark:text-stone-100 dark:placeholder:text-stone-500"
                 disabled={isSubmitting}
                 id="display-name"
                 maxLength={40}
@@ -111,7 +111,7 @@ export function DemoLoginCard({
 
             <Field>
               <Button
-                className="h-12 rounded-[1.2rem] bg-[#c7642d] text-white hover:bg-[#b85724]"
+                className="h-12 rounded-[1.2rem] bg-[#c7642d] text-white hover:bg-[#b85724] dark:bg-amber-500 dark:text-stone-950 dark:hover:bg-amber-400"
                 disabled={isSubmitting}
                 type="submit"
               >
@@ -121,7 +121,7 @@ export function DemoLoginCard({
           </FieldGroup>
         </form>
 
-        <FieldDescription className="px-2 text-center text-sm leading-7 text-slate-600">
+        <FieldDescription className="px-2 text-center text-sm leading-7 text-slate-600 dark:text-stone-400">
           {messages.demoLoginFootnote}
         </FieldDescription>
       </div>

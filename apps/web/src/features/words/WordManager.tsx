@@ -314,16 +314,16 @@ export function WordManager({
   return (
     <section className="grid h-full min-h-0 gap-3 xl:grid-cols-[minmax(0,1fr)_24rem]">
       <form
-        className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] xl:flex xl:flex-col xl:p-8"
+        className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col xl:p-8"
         onSubmit={handleSaveWord}
       >
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4 dark:border-white/10">
           <div>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-stone-300">
               {editingWord ? messages.editWordHelp : messages.saveWordHelp}
             </p>
             {editingWord ? (
-              <p className="mt-2 text-sm font-medium text-slate-900">
+              <p className="mt-2 text-sm font-medium text-slate-900 dark:text-stone-100">
                 {messages.editingWord(editingWord.simplified)}
               </p>
             ) : null}
@@ -446,10 +446,10 @@ export function WordManager({
           <div
             className={`mt-4 rounded-[1.2rem] border px-4 py-3 text-sm leading-6 ${
               saveNotice.tone === "success"
-                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-700/40 dark:bg-emerald-500/12 dark:text-emerald-200"
                 : saveNotice.tone === "warning"
-                  ? "border-amber-200 bg-amber-50 text-amber-900"
-                  : "border-slate-200 bg-slate-50 text-slate-700"
+                  ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-500/35 dark:bg-amber-500/12 dark:text-amber-200"
+                  : "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-stone-300"
             }`}
           >
             {saveNotice.detail}
@@ -457,13 +457,13 @@ export function WordManager({
         ) : null}
 
         {errorMessage ? (
-          <div className="mt-4 rounded-[1.2rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-6 text-rose-700">
+          <div className="mt-4 rounded-[1.2rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-6 text-rose-700 dark:border-rose-500/35 dark:bg-rose-500/12 dark:text-rose-200">
             {errorMessage}
           </div>
         ) : null}
 
-        <div className="mt-6 flex flex-col items-start gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-500">{messages.startTypingHelp}</p>
+        <div className="mt-6 flex flex-col items-start gap-4 border-t border-slate-200 pt-6 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-500 dark:text-stone-400">{messages.startTypingHelp}</p>
           <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             {editingWord ? (
               <Button
@@ -492,11 +492,11 @@ export function WordManager({
         </div>
       </form>
 
-      <aside className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] xl:flex xl:flex-col">
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-2 pb-4">
+      <aside className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col">
+        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-2 pb-4 dark:border-white/10">
           <div>
-            <p className="text-sm font-medium text-slate-600">{messages.savedWords}</p>
-            <p className="mt-1 text-3xl font-semibold text-slate-950">{words.length}</p>
+            <p className="text-sm font-medium text-slate-600 dark:text-stone-300">{messages.savedWords}</p>
+            <p className="mt-1 text-3xl font-semibold text-slate-950 dark:text-stone-50">{words.length}</p>
           </div>
           <StatusBadge>
             {dueWordCount > 0
@@ -507,7 +507,7 @@ export function WordManager({
 
         <div className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1">
           {words.length === 0 ? (
-            <div className="flex h-full min-h-[220px] items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-5 text-center text-sm leading-7 text-slate-600">
+            <div className="flex h-full min-h-[220px] items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-5 text-center text-sm leading-7 text-slate-600 dark:border-white/14 dark:bg-white/5 dark:text-stone-300">
               {messages.emptyDictionary}
             </div>
           ) : (
@@ -519,18 +519,18 @@ export function WordManager({
 
                 return (
                   <article
-                    className="rounded-[1.25rem] border border-slate-200 bg-slate-50/85 px-4 py-4"
+                    className="rounded-[1.25rem] border border-slate-200 bg-slate-50/85 px-4 py-4 dark:border-white/10 dark:bg-white/5"
                     key={word.id}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                      <p className="text-3xl font-semibold text-slate-950">
+                      <p className="text-3xl font-semibold text-slate-950 dark:text-stone-50">
                         {word.simplified}
                       </p>
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${
                           word.review.isDue
                             ? "bg-amber-100 text-amber-800"
-                            : "bg-slate-200 text-slate-700"
+                            : "bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-stone-300"
                         }`}
                       >
                         {word.review.isDue
@@ -538,13 +538,13 @@ export function WordManager({
                           : messages.reviewScheduled}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm font-medium text-slate-700">
+                    <p className="mt-2 text-sm font-medium text-slate-700 dark:text-stone-200">
                       {toneMarkedPinyin || word.pinyinCanonical}
                     </p>
                     <p className="mt-3 text-sm leading-6 text-amber-800">
                       {word.translation}
                     </p>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
+                    <p className="mt-3 text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-stone-400">
                       {word.review.isDue
                         ? messages.readyForReview
                         : messages.nextReview(formatDateTime(word.review.nextReviewAt))}
@@ -590,10 +590,10 @@ function FieldBlock({
 }) {
   return (
     <div className="space-y-3">
-      <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
+      <label className="flex flex-col gap-2 text-sm font-medium text-slate-700 dark:text-stone-300">
         {label}
         <input
-          className="rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3 text-base outline-none transition focus:border-amber-500"
+          className="rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3 text-base outline-none transition focus:border-amber-500 dark:border-white/12 dark:bg-white/6 dark:text-stone-100 dark:placeholder:text-stone-500"
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
@@ -605,7 +605,7 @@ function FieldBlock({
         <div className="flex flex-wrap gap-2">
           {suggestions.map((suggestion) => (
             <button
-              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 transition hover:border-amber-500 hover:text-amber-800"
+              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 transition hover:border-amber-500 hover:text-amber-800 dark:border-white/10 dark:bg-white/6 dark:text-stone-200 dark:hover:border-amber-400 dark:hover:text-amber-300"
               key={suggestion}
               onClick={() => onApplySuggestion(suggestion)}
               type="button"
@@ -621,7 +621,7 @@ function FieldBlock({
 
 function StatusBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+    <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600 dark:border-white/10 dark:bg-white/6 dark:text-stone-300">
       {children}
     </span>
   );

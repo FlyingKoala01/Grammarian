@@ -267,8 +267,8 @@ export function SidebarTrigger({
   return (
     <button
       aria-label="Toggle sidebar"
-      className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50",
+        className={cn(
+        "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-white/12 dark:bg-white/6 dark:text-stone-100 dark:shadow-[0_12px_32px_rgba(0,0,0,0.28)] dark:hover:bg-white/10",
         className,
       )}
       onClick={toggleSidebar}

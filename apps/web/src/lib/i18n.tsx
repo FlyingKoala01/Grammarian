@@ -105,6 +105,11 @@ export interface AppMessages {
   traceStatusReady: string;
   toneSuggestions: string;
   translationPlaceholder: string;
+  theme: string;
+  themeDark: string;
+  themeLight: string;
+  themeToggleToDark: string;
+  themeToggleToLight: string;
   writingExerciseHint: (
     characterCount: number,
     firstCharacter: string,
@@ -233,9 +238,9 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
       "The tracing canvas could not load for this word. You can type the answer instead.",
     traceDrawingUnavailableAction: "Type instead",
     traceInstructions:
-      "Trace each character stroke by stroke inside the guide. After two misses on the same stroke, the correct order is shown.",
+      "Trace each character stroke by stroke inside the guide. If a stroke is missed, the correct stroke is shown and the trace moves forward.",
     traceStrokeHint: (strokeNumber) =>
-      `Hint shown: watch stroke ${strokeNumber} in orange, then try it again.`,
+      `Hint shown: stroke ${strokeNumber} was demonstrated in orange. Continue with the next stroke.`,
     traceLoading: "Loading tracing canvas...",
     traceMistakes: (count) =>
       `${count} mistake${count === 1 ? "" : "s"} in this attempt`,
@@ -244,6 +249,11 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     traceStatusReady: "Trace the character",
     toneSuggestions: "Tone suggestions",
     translationPlaceholder: "e.g. to study",
+    theme: "Theme",
+    themeDark: "Dark",
+    themeLight: "Light",
+    themeToggleToDark: "Switch to dark theme",
+    themeToggleToLight: "Switch to light theme",
     writingExerciseHint: (characterCount, firstCharacter, pinyin) =>
       `Hint: ${characterCount} character${characterCount === 1 ? "" : "s"}. It starts with ${firstCharacter}. Pinyin: ${pinyin}.`,
     wordsCount: (count) => `${count} word${count === 1 ? "" : "s"}`,
@@ -368,9 +378,9 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
       "Il canvas di tracciamento non e disponibile per questa parola. Puoi scrivere la risposta.",
     traceDrawingUnavailableAction: "Scrivi invece",
     traceInstructions:
-      "Traccia ogni carattere tratto per tratto dentro la guida. Dopo due errori sullo stesso tratto, viene mostrato l'ordine corretto.",
+      "Traccia ogni carattere tratto per tratto dentro la guida. Se un tratto viene sbagliato, il tratto corretto viene mostrato e il tracciamento va avanti.",
     traceStrokeHint: (strokeNumber) =>
-      `Suggerimento mostrato: guarda il tratto ${strokeNumber} in arancione e poi riprova.`,
+      `Suggerimento mostrato: il tratto ${strokeNumber} e stato mostrato in arancione. Continua con il tratto successivo.`,
     traceLoading: "Caricamento del canvas di tracciamento...",
     traceMistakes: (count) =>
       `${count} error${count === 1 ? "e" : "i"} in questo tentativo`,
@@ -379,6 +389,11 @@ const messagesByLocale: Record<AppLocale, AppMessages> = {
     traceStatusReady: "Traccia il carattere",
     toneSuggestions: "Suggerimenti di tono",
     translationPlaceholder: "es. studiare",
+    theme: "Tema",
+    themeDark: "Scuro",
+    themeLight: "Chiaro",
+    themeToggleToDark: "Passa al tema scuro",
+    themeToggleToLight: "Passa al tema chiaro",
     writingExerciseHint: (characterCount, firstCharacter, pinyin) =>
       `Suggerimento: ${characterCount} caratter${characterCount === 1 ? "e" : "i"}. Inizia con ${firstCharacter}. Pinyin: ${pinyin}.`,
     wordsCount: (count) => `${count} parola${count === 1 ? "" : "e"}`,

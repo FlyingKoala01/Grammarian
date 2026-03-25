@@ -49,14 +49,14 @@ export function HealthStatusCard() {
   return (
     <section
       id="workspace-status"
-      className="rounded-[1.75rem] border border-slate-950/10 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
+      className="rounded-[1.75rem] border border-slate-950/10 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_24px_70px_rgba(0,0,0,0.36)]"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-stone-400">
             Workspace status
           </p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-950">
+          <h2 className="mt-2 text-2xl font-semibold text-slate-950 dark:text-stone-50">
             API connectivity
           </h2>
         </div>
@@ -66,7 +66,7 @@ export function HealthStatusCard() {
       </div>
 
       {healthState.status === "loading" ? (
-        <div className="mt-6 rounded-2xl bg-slate-100 px-4 py-6 text-sm text-slate-600">
+        <div className="mt-6 rounded-2xl bg-slate-100 px-4 py-6 text-sm text-slate-600 dark:bg-white/5 dark:text-stone-300">
           Checking the API health endpoint...
         </div>
       ) : null}
@@ -100,12 +100,11 @@ export function HealthStatusCard() {
 
 function StatusTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-white/10 dark:bg-white/5">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-stone-400">
         {label}
       </p>
-      <p className="mt-2 text-lg font-semibold text-slate-950">{value}</p>
+      <p className="mt-2 text-lg font-semibold text-slate-950 dark:text-stone-50">{value}</p>
     </div>
   );
 }
-

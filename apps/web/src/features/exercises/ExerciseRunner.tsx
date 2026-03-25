@@ -16,6 +16,7 @@ import { HanziTracePad } from "@/features/exercises/HanziTracePad";
 import { PinyinField } from "@/features/words/PinyinField";
 import type { AppMessages } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n";
+import type { AppThemeMode } from "@/lib/theme";
 
 interface ExerciseRunnerProps {
   currentExercise: WordExercise | null;
@@ -29,6 +30,7 @@ interface ExerciseRunnerProps {
   onSubmitAnswer: (answer: string) => void | Promise<void>;
   progress: StudyProgressSummary;
   selectedExerciseType: DocumentedExerciseType;
+  themeMode: AppThemeMode;
   wordCount: number;
 }
 
@@ -44,6 +46,7 @@ export function ExerciseRunner({
   onSubmitAnswer,
   progress,
   selectedExerciseType,
+  themeMode,
   wordCount,
 }: ExerciseRunnerProps) {
   const { formatDateTime, messages } = useI18n();
@@ -86,11 +89,26 @@ export function ExerciseRunner({
     exerciseOptions[0]!;
   const isSupportedSelection = isSupportedWordExerciseType(selectedOption.id);
   const canLoadExercise = wordCount > 0 && isSupportedSelection;
+  const feedbackClasses = exerciseResult
+    ? exerciseResult.isCorrect
+      ? {
+          container:
+            "border-emerald-200 bg-emerald-50 dark:border-emerald-500/28 dark:bg-emerald-500/12",
+          detail: "text-emerald-800 dark:text-emerald-50/88",
+          title: "text-emerald-950 dark:text-emerald-50",
+        }
+      : {
+          container:
+            "border-rose-200 bg-rose-50 dark:border-rose-500/28 dark:bg-rose-500/10",
+          detail: "text-rose-800 dark:text-rose-50/88",
+          title: "text-rose-950 dark:text-rose-50",
+        }
+    : null;
 
   return (
     <section className="grid h-full min-h-0 gap-3 xl:grid-cols-[minmax(0,1fr)_24rem]">
-      <div className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] xl:flex xl:flex-col xl:p-8">
-        <div className="border-b border-slate-200 pb-5">
+      <div className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col xl:p-8">
+        <div className="border-b border-slate-200 pb-5 dark:border-white/10">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
               {currentExercise ? (
@@ -99,16 +117,16 @@ export function ExerciseRunner({
                 </span>
               ) : null}
               {currentExercise ? (
-                <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800">
+                <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-100">
                   {currentExercise.queueMode === "due"
                     ? messages.dueNow
                     : messages.reviewScheduled}
                 </span>
               ) : null}
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700">
+              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-white/10 dark:bg-white/6 dark:text-stone-200">
                 {messages.wordsCount(wordCount)}
               </span>
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700">
+              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700 dark:border-white/10 dark:bg-white/6 dark:text-stone-200">
                 {formatReviewQueueSummary(progress, messages, formatDateTime)}
               </span>
             </div>
@@ -128,8 +146,8 @@ export function ExerciseRunner({
                 <button
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition ${
                     isActive
-                      ? "border-slate-900 bg-slate-900 text-white"
-                      : "border-slate-200 bg-slate-50 text-slate-900 hover:border-slate-300"
+                      ? "border-slate-900 bg-slate-900 text-white dark:border-[#b67742] dark:bg-[#3a2819] dark:text-amber-50 dark:shadow-[0_20px_45px_rgba(0,0,0,0.28)]"
+                      : "border-slate-200 bg-slate-50 text-slate-900 hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:text-stone-100 dark:hover:border-white/20"
                   }`}
                   key={option.id}
                   onClick={() => onSelectExerciseType(option.id)}
@@ -140,10 +158,10 @@ export function ExerciseRunner({
                     <span
                       className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
                         isActive
-                          ? "bg-white/15 text-white"
+                          ? "bg-white/15 text-white dark:bg-amber-100/10 dark:text-amber-100"
                           : option.isAvailable
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-slate-200 text-slate-600"
+                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-100"
+                            : "bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-stone-400"
                       }`}
                     >
                       {option.isAvailable
@@ -153,7 +171,7 @@ export function ExerciseRunner({
                   </div>
                   <p
                     className={`mt-3 text-sm leading-6 ${
-                      isActive ? "text-white/82" : "text-slate-600"
+                      isActive ? "text-white/82 dark:text-amber-50/80" : "text-slate-600 dark:text-stone-300"
                     }`}
                   >
                     {option.description}
@@ -166,26 +184,26 @@ export function ExerciseRunner({
 
         <div className="flex min-h-0 flex-1 flex-col pt-6">
           {wordCount === 0 ? (
-            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600">
+            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/14 dark:bg-white/5 dark:text-stone-300">
               {messages.exerciseEmpty}
             </div>
           ) : null}
 
           {wordCount > 0 && !isSupportedSelection ? (
-            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600">
+            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/14 dark:bg-white/5 dark:text-stone-300">
               {selectedOption?.unavailableMessage ??
                 "This exercise family is planned, but it still needs dedicated content and generation logic."}
             </div>
           ) : null}
 
           {canLoadExercise && isLoadingExercise ? (
-            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600">
+            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-stone-300">
               {messages.exerciseLoading}
             </div>
           ) : null}
 
           {canLoadExercise && !isLoadingExercise && !currentExercise ? (
-            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600">
+            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-slate-200 bg-slate-50 px-6 text-center text-sm leading-7 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-stone-300">
               {selectedOption.description}
             </div>
           ) : null}
@@ -193,11 +211,11 @@ export function ExerciseRunner({
           {canLoadExercise && !isLoadingExercise && currentExercise ? (
             <div className="flex min-h-0 flex-1 flex-col justify-between gap-6">
               <div>
-                <h2 className="max-w-4xl text-3xl font-semibold leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
+                <h2 className="max-w-4xl text-3xl font-semibold leading-tight text-slate-950 dark:text-stone-50 sm:text-4xl lg:text-5xl">
                   {currentExercise.promptText}
                 </h2>
                 {currentExercise.promptSecondaryText ? (
-                  <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">
+                  <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600 dark:text-stone-300">
                     {currentExercise.promptSecondaryText}
                   </p>
                 ) : null}
@@ -210,6 +228,7 @@ export function ExerciseRunner({
                     disabled={isSubmittingAnswer || Boolean(exerciseResult)}
                     onChange={setAnswer}
                     onRequestTextFallback={() => setUseTraceTextFallback(true)}
+                    themeMode={themeMode}
                   />
                 ) : isPinyinExercise ? (
                   <PinyinField
@@ -221,10 +240,10 @@ export function ExerciseRunner({
                     value={answer}
                   />
                 ) : (
-                  <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
+                  <label className="flex flex-col gap-2 text-sm font-medium text-slate-700 dark:text-stone-300">
                     {currentExercise.inputLabel}
                     <input
-                      className="rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-4 text-lg text-slate-950 outline-none transition focus:border-amber-500"
+                      className="rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-4 text-lg text-slate-950 outline-none transition focus:border-amber-500 dark:border-white/12 dark:bg-white/6 dark:text-stone-100 dark:placeholder:text-stone-500"
                       disabled={isSubmittingAnswer || Boolean(exerciseResult)}
                       onChange={(event) => setAnswer(event.target.value)}
                       placeholder={currentExercise.inputPlaceholder}
@@ -235,13 +254,13 @@ export function ExerciseRunner({
                 )}
 
                 {errorMessage ? (
-                  <div className="rounded-[1.2rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-6 text-rose-700">
+                  <div className="rounded-[1.2rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-6 text-rose-700 dark:border-rose-500/28 dark:bg-rose-500/10 dark:text-rose-100">
                     {errorMessage}
                   </div>
                 ) : null}
 
                 {!exerciseResult ? (
-                  <div className="flex justify-end border-t border-slate-200 pt-4">
+                  <div className="flex justify-end border-t border-slate-200 pt-4 dark:border-white/10">
                     <Button
                       className="rounded-xl"
                       disabled={!canSubmit || isSubmittingAnswer}
@@ -259,21 +278,17 @@ export function ExerciseRunner({
         </div>
       </div>
 
-      <aside className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] xl:flex xl:flex-col">
+      <aside className="min-h-0 rounded-[1.5rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/6 dark:shadow-[0_22px_65px_rgba(0,0,0,0.34)] xl:flex xl:flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto">
           {exerciseResult ? (
             <div className="space-y-4">
               <div
-                className={`rounded-[1.25rem] border px-4 py-4 ${
-                  exerciseResult.isCorrect
-                    ? "border-emerald-200 bg-emerald-50"
-                    : "border-amber-200 bg-amber-50"
-                }`}
+                className={`rounded-[1.25rem] border px-4 py-4 ${feedbackClasses?.container ?? ""}`}
               >
-                <p className="text-lg font-semibold text-slate-950">
+                <p className={`text-lg font-semibold ${feedbackClasses?.title ?? "text-slate-950 dark:text-stone-50"}`}>
                   {exerciseResult.feedbackShort}
                 </p>
-                <p className="mt-2 text-sm leading-7 text-slate-700">
+                <p className={`mt-2 text-sm leading-7 ${feedbackClasses?.detail ?? "text-slate-700 dark:text-stone-200"}`}>
                   {exerciseResult.feedbackDetailed}
                 </p>
               </div>
@@ -367,11 +382,11 @@ function AnswerTile({ label, value }: { label: string; value: string }) {
   const { messages } = useI18n();
 
   return (
-    <div className="rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+    <div className="rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-4 dark:border-white/10 dark:bg-white/5">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-stone-400">
         {label}
       </p>
-      <p className="mt-2 text-base font-medium text-slate-900">
+      <p className="mt-2 text-base font-medium text-slate-900 dark:text-stone-100">
         {value || messages.noAnswerRecorded}
       </p>
     </div>
@@ -380,11 +395,11 @@ function AnswerTile({ label, value }: { label: string; value: string }) {
 
 function SideNote({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+    <div className="rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-4 dark:border-white/10 dark:bg-white/5">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-stone-400">
         {label}
       </p>
-      <p className="mt-2 text-sm leading-7 text-slate-700">{value}</p>
+      <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-stone-200">{value}</p>
     </div>
   );
 }

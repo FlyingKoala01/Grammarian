@@ -1,10 +1,16 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   color: #0f172a;
   color-scheme: light;
   font-family: "Aptos", "Trebuchet MS", "Segoe UI", sans-serif;
   background-color: #f5ece1;
+  --app-bg-start: #f8f3ec;
+  --app-bg-end: #efe7dc;
+  --app-bg-accent: rgba(196, 106, 36, 0.12);
+  --app-text-color: #0f172a;
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: 240 5.9% 10%;
@@ -15,6 +21,24 @@
   --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
+.dark {
+  color: #f3eee7;
+  color-scheme: dark;
+  background-color: #120f0d;
+  --app-bg-start: #1c1612;
+  --app-bg-end: #0f0d0b;
+  --app-bg-accent: rgba(217, 119, 6, 0.18);
+  --app-text-color: #f5efe7;
+  --sidebar-background: 24 16% 11%;
+  --sidebar-foreground: 34 24% 90%;
+  --sidebar-primary: 31 83% 57%;
+  --sidebar-primary-foreground: 24 26% 11%;
+  --sidebar-accent: 22 14% 18%;
+  --sidebar-accent-foreground: 34 24% 90%;
+  --sidebar-border: 21 12% 20%;
+  --sidebar-ring: 35 92% 62%;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -22,7 +46,10 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8f3ec 0%, #efe7dc 100%);
+  color: var(--app-text-color);
+  background:
+    radial-gradient(circle at top, var(--app-bg-accent), transparent 42%),
+    linear-gradient(180deg, var(--app-bg-start) 0%, var(--app-bg-end) 100%);
   background-attachment: fixed;
   overflow-x: hidden;
 }
